@@ -20,6 +20,7 @@ func RegisterAuthHandlers(router *gin.Engine, authService AuthService) {
 func Login(c *gin.Context, authService AuthService) {
 	var requestBody LoginRequestBody
 
+	// Bind the request body
 	if err := c.BindJSON(&requestBody); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Invalid request body",
