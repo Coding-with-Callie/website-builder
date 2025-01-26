@@ -9,6 +9,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var DB *sql.DB
+
 func Connect() {
 	err := godotenv.Load()
 	if err != nil {
@@ -55,4 +57,6 @@ func Connect() {
 	if err != nil {
 		panic(err)
 	}
+
+	DB = db
 }

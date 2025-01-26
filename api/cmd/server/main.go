@@ -14,7 +14,10 @@ func main() {
 	router := gin.Default()
 	router.GET("test", getTest)
 
-	auth.RegisterAuthHandlers(router)
+	// Create auth service
+	authService := auth.NewAuthService(database.DB)
+
+	auth.RegisterAuthHandlers(router, authService)
 
 	router.Run(":8080")
 }
