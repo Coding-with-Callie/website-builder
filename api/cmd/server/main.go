@@ -12,18 +12,10 @@ func main() {
 	database.Connect()
 
 	router := gin.Default()
-	router.GET("test", getTest)
 
-	// Create auth service
+	// Create auth service and register auth handlers
 	authService := auth.NewAuthService(database.DB)
-
 	auth.RegisterAuthHandlers(router, authService)
 
 	router.Run(":8080")
-}
-
-func getTest(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "test",
-	})
 }
