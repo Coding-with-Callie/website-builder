@@ -1,12 +1,11 @@
 package auth
 
 import (
+	"api/internal/config"
 	"database/sql"
 	"fmt"
-	"os"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,16 +19,8 @@ type authService struct {
 }
 
 func NewAuthService(db *sql.DB) AuthService {
-	err := godotenv.Load()
-	if err != nil {
-		panic(err)
-	}
-
 	// Get the JWT secret from the environment variable
-	jwtSecret := os.Getenv("JWT_SECRET")
-	if jwtSecret == "" {
-		panic("JWT_SECRET is not set")
-	}
+	jwtSecret := config.AppConfig.JWTSecret
 
 	return &authService{db: db, jwtSecret: jwtSecret}
 }

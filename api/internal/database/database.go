@@ -1,24 +1,20 @@
 package database
 
 import (
+	"api/internal/config"
 	"database/sql"
 	"fmt"
-	"os"
 
-	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 var DB *sql.DB
 
 func Connect() {
-	err := godotenv.Load()
-	if err != nil {
-		panic(err)
-	}
+	config := config.AppConfig
 
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
+	user := config.DBUser
+	password := config.DBPassword
 
 	// Connect to defailt postgres database
 	db, err := sql.Open("postgres", fmt.Sprintf("user=%s password=%s dbname=postgres sslmode=disable", user, password))

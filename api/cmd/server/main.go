@@ -2,12 +2,16 @@ package main
 
 import (
 	"api/internal/auth"
+	"api/internal/config"
 	"api/internal/database"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	// Load configuration
+	config.LoadConfig()
+
 	// Connect to the database
 	database.Connect()
 
