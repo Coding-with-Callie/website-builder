@@ -28,7 +28,7 @@ func NewAuthService(db *sql.DB, logger zerolog.Logger) AuthService {
 }
 
 func (s *authService) Login(username string, password string) (string, error) {
-	s.logger.Info().Msg("Logging in user")
+	s.logger.Info().Str("username", username).Msg("Logging in user")
 
 	// Get the user from the database
 	var storedPassword string
@@ -55,7 +55,7 @@ func (s *authService) Login(username string, password string) (string, error) {
 		return "", err
 	}
 
-	s.logger.Info().Msg("User logged in successfully")
+	s.logger.Info().Str("username", username).Msg("User logged in successfully")
 
 	return tokenString, nil
 }

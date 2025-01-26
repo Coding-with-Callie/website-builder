@@ -15,7 +15,7 @@ func main() {
 	// Load configuration
 	config.LoadConfig()
 
-	logger := zerolog.New(os.Stdout)
+	logger := zerolog.New(zerolog.ConsoleWriter{Out: os.Stdout, NoColor: false}).With().Timestamp().Logger()
 
 	// Connect to the database
 	database.Connect(logger)
@@ -46,7 +46,7 @@ func ginLogger(logger zerolog.Logger) gin.HandlerFunc {
 
 		event := logger.Info()
 		status := c.Writer.Status()
-		message := "request"
+		message := "Request completed"
 
 		if status >= 400 {
 			event = logger.Error()
@@ -57,7 +57,6 @@ func ginLogger(logger zerolog.Logger) gin.HandlerFunc {
 			Str("path", path).
 			Int("status", c.Writer.Status()).
 			Dur("duration", end.Sub(start)).
-			Str("client_ip", c.ClientIP()).
 			Msg(message)
 	}
 }
