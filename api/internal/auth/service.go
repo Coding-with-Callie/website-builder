@@ -41,7 +41,7 @@ func (s *authService) Login(username string, password string) (string, error) {
 	// Check if the password is correct
 	err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
 	if err != nil {
-		s.logger.Error().Err(err).Msg("Login failed")
+		s.logger.Error().Err(err).Str("username", username).Msg("Login failed")
 		return "", err
 	}
 
@@ -51,7 +51,7 @@ func (s *authService) Login(username string, password string) (string, error) {
 	})
 	tokenString, err := token.SignedString([]byte(s.jwtSecret))
 	if err != nil {
-		s.logger.Error().Err(err).Msg("Login failed")
+		s.logger.Error().Err(err).Str("username", username).Msg("Login failed")
 		return "", err
 	}
 
