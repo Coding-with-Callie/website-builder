@@ -3,7 +3,10 @@ package auth
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
+	"github.com/golang-jwt/jwt"
+	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -12,11 +15,23 @@ type AuthService interface {
 }
 
 type authService struct {
-	db *sql.DB
+	db        *sql.DB
+	jwtSecret string
 }
 
 func NewAuthService(db *sql.DB) AuthService {
-	return &authService{db: db}
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
+
+	// Get the JWT secret from the environment variable
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if jwtSecret == "" {
+		panic("JWT_SECRET is not set")
+	}
+
+	return &authService{db: db, jwtSecret: jwtSecret}
 }
 
 func (s *authService) Login(username string, password string) (string, error) {
@@ -35,5 +50,13 @@ func (s *authService) Login(username string, password string) (string, error) {
 	}
 
 	// Generate a JWT
-	return "HERE'S YOURE TOKEN", nil
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username": username,
+	})
+	tokenString, err := token.SignedString([]byte(s.jwtSecret))
+	if err != nil {
+		return "", err
+	}
+
+	return tokenString, nil
 }
