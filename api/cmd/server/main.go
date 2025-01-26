@@ -15,13 +15,14 @@ func main() {
 	// Load configuration
 	config.LoadConfig()
 
+	// Set up logger
 	logger := zerolog.New(zerolog.ConsoleWriter{Out: os.Stdout, NoColor: false}).With().Timestamp().Logger()
 
 	// Connect to the database
 	database.Connect(logger)
 
 	router := gin.New()
-	router.Use(ginLogger(logger))
+	router.Use(requestLogger(logger))
 
 	// Create auth service and register auth handlers
 	authService := auth.NewAuthService(database.DB, logger)
@@ -30,7 +31,7 @@ func main() {
 	router.Run(":8080")
 }
 
-func ginLogger(logger zerolog.Logger) gin.HandlerFunc {
+func requestLogger(logger zerolog.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		path := c.Request.URL.Path
