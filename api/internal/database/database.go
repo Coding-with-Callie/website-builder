@@ -53,7 +53,7 @@ func Connect() {
 	fmt.Println("Connected to database")
 
 	// Create a users table if it doesn't exist
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, first_name VARCHAR(50), last_name VARCHAR(50), email VARCHAR(50), username VARCHAR(50), password VARCHAR(50), role VARCHAR(50), photo VARCHAR(255))")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, first_name VARCHAR(50), last_name VARCHAR(50), email VARCHAR(50), username VARCHAR(50), password VARCHAR(255), role VARCHAR(50), photo VARCHAR(255))")
 	if err != nil {
 		panic(err)
 	}

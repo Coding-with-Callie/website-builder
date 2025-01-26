@@ -3,6 +3,8 @@ package auth
 import (
 	"database/sql"
 	"fmt"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthService interface {
@@ -18,8 +20,6 @@ func NewAuthService(db *sql.DB) AuthService {
 }
 
 func (s *authService) Login(username string, password string) (string, error) {
-	fmt.Printf("username: %s, password: %s\n", username, password)
-
 	// Get the user from the database
 	var storedPassword string
 	err := s.db.QueryRow("SELECT password FROM users WHERE username = $1", username).Scan(&storedPassword)
@@ -28,9 +28,12 @@ func (s *authService) Login(username string, password string) (string, error) {
 		return "", err
 	}
 
-	if storedPassword != password {
-		return "", fmt.Errorf("invalid password")
+	// Check if the password is correct
+	err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
+	if err != nil {
+		return "", err
 	}
 
+	// Generate a JWT
 	return "HERE'S YOURE TOKEN", nil
 }
