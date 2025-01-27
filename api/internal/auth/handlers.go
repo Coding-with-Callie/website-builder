@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog"
 )
 
 type LoginRequestBody struct {
@@ -11,10 +12,21 @@ type LoginRequestBody struct {
 	Password string `json:"password"`
 }
 
-func RegisterAuthHandlers(router *gin.Engine, authService AuthService) {
+func RegisterAuthHandlers(router *gin.Engine, authService AuthService, logger zerolog.Logger) {
 	router.POST("/login", func(c *gin.Context) {
 		Login(c, authService)
 	})
+
+	// Protected routes
+	authorized := router.Group("/auth/")
+	authorized.Use(AuthMiddleware(logger))
+	{
+		authorized.GET("/protected", func(c *gin.Context) {
+			c.JSON(http.StatusOK, gin.H{
+				"message": "This is a protected route",
+			})
+		})
+	}
 }
 
 func Login(c *gin.Context, authService AuthService) {

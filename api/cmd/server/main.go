@@ -26,7 +26,7 @@ func main() {
 
 	// Create auth service and register auth handlers
 	authService := auth.NewAuthService(database.DB, logger)
-	auth.RegisterAuthHandlers(router, authService)
+	auth.RegisterAuthHandlers(router, authService, logger)
 
 	router.Run(":8080")
 }
