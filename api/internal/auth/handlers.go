@@ -21,11 +21,21 @@ func RegisterAuthHandlers(router *gin.Engine, authService AuthService, logger ze
 	authorized := router.Group("/auth/")
 	authorized.Use(AuthMiddleware(logger))
 	{
-		authorized.GET("/protected", func(c *gin.Context) {
+		authorized.GET("/user-details", func(c *gin.Context) {
 			username := c.MustGet("username").(string)
+
+			// Get user details from the database
+			userDetails, err := authService.GetUserDetails(username)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"message": "Invalid request",
+				})
+				return
+			}
+
+			// Return user details
 			c.JSON(http.StatusOK, gin.H{
-				"message":  "This is a protected route",
-				"username": username,
+				"user": userDetails,
 			})
 		})
 	}

@@ -12,6 +12,7 @@ import (
 
 type AuthService interface {
 	Login(username string, password string) (string, error)
+	GetUserDetails(username string) (map[string]interface{}, error)
 }
 
 type authService struct {
@@ -58,4 +59,24 @@ func (s *authService) Login(username string, password string) (string, error) {
 	s.logger.Info().Str("username", username).Msg("User logged in successfully")
 
 	return tokenString, nil
+}
+
+func (s *authService) GetUserDetails(username string) (map[string]interface{}, error) {
+	// Get the user from the database
+	var firstName string
+	var lastName string
+	var role string
+	err := s.db.QueryRow("SELECT first_name, last_name, role FROM users WHERE username = $1", username).Scan(&firstName, &lastName, &role)
+	if err != nil {
+		return nil, err
+	}
+
+	userDetails := map[string]interface{}{
+		"username":  username,
+		"firstName": firstName,
+		"lastName":  lastName,
+		"role":      role,
+	}
+
+	return userDetails, nil
 }
