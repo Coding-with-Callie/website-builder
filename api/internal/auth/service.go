@@ -4,6 +4,7 @@ import (
 	"api/internal/config"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/rs/zerolog"
@@ -46,9 +47,11 @@ func (s *authService) Login(username string, password string) (string, error) {
 		return "", err
 	}
 
-	// Generate a JWT
+	// Generate a JWT with a 10-section expiration time
+	expirationTime := time.Now().Add(30 * time.Second).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
+		"exp":      expirationTime,
 	})
 	tokenString, err := token.SignedString([]byte(s.jwtSecret))
 	if err != nil {

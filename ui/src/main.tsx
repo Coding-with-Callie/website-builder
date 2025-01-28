@@ -3,13 +3,14 @@ import "./index.css";
 import App from "./App.tsx";
 import { Provider } from "./components/ui/provider";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Temp from "./components/Temp.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <Provider>
     <Router>
       <Routes>
         <Route path="/" element={<App />}>
-          <Route index element={<div>FAKE PAGE</div>} />
+          <Route index element={<Temp />} />
         </Route>
       </Routes>
     </Router>
