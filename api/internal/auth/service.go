@@ -47,7 +47,7 @@ func (s *authService) Login(username string, password string) (string, error) {
 		return "", err
 	}
 
-	// Generate a JWT with a 10-section expiration time
+	// Generate a JWT with a 30-section expiration time
 	expirationTime := time.Now().Add(30 * time.Second).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
