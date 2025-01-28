@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { guestUser, User } from "../types/user";
 import { axiosPrivate } from "../utils/axios";
 
-export const useAuth = () => {
+export const useUser = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
