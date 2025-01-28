@@ -13,6 +13,7 @@ function App() {
 
   return (
     <VStack>
+      {/* Header needs user details too */}
       <Header />
       <Outlet context={user} />
       <Footer />

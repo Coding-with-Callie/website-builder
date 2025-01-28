@@ -15,6 +15,11 @@ const guestUser: User = {
   username: "guest",
 };
 
+const axiosPrivate = axios.create({
+  baseURL: "http://localhost:8080/auth",
+  withCredentials: true,
+});
+
 export const useAuth = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
@@ -27,8 +32,8 @@ export const useAuth = () => {
       return;
     }
 
-    axios
-      .get("http://localhost:8080/auth/user-details", { withCredentials: true })
+    axiosPrivate
+      .get("/user-details")
       .then((response) => {
         setUser(response.data.user);
       })
