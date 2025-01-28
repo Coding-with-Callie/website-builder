@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router-dom";
-import { User } from "../hooks/useAuth";
+import { User } from "../types/user";
 
 const Temp = () => {
   const user = useOutletContext() as User;
@@ -9,7 +9,9 @@ const Temp = () => {
       {user.role == "guest" ? (
         <h1>No one is logged in</h1>
       ) : (
-        <h1>{user.firstName}</h1>
+        <h1>
+          {user.firstName} {user.lastName} is logged in
+        </h1>
       )}
     </>
   );

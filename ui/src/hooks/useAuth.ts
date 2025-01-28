@@ -1,24 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-
-export type User = {
-  firstName: string;
-  lastName: string;
-  role: string;
-  username: string;
-};
-
-const guestUser: User = {
-  firstName: "guest",
-  lastName: "guest",
-  role: "guest",
-  username: "guest",
-};
-
-const axiosPrivate = axios.create({
-  baseURL: "http://localhost:8080/auth",
-  withCredentials: true,
-});
+import { guestUser, User } from "../types/user";
+import { axiosPrivate } from "../utils/axios";
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(true);
