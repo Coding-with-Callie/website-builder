@@ -6,13 +6,14 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"github.com/rs/zerolog"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthService interface {
-	Login(username string, password string) (string, error)
+	Login(c *gin.Context, username string, password string) (string, error)
 	GetUserDetails(username string) (map[string]interface{}, error)
 }
 
@@ -29,7 +30,7 @@ func NewAuthService(db *sql.DB, logger zerolog.Logger) AuthService {
 	return &authService{db: db, jwtSecret: jwtSecret, logger: logger}
 }
 
-func (s *authService) Login(username string, password string) (string, error) {
+func (s *authService) Login(c *gin.Context, username string, password string) (string, error) {
 	s.logger.Info().Str("username", username).Msg("Logging in user")
 
 	// Get the user from the database
@@ -47,8 +48,8 @@ func (s *authService) Login(username string, password string) (string, error) {
 		return "", err
 	}
 
-	// Generate a JWT with a 30-section expiration time
-	expirationTime := time.Now().Add(30 * time.Second).Unix()
+	// Generate a JWT with a 5-minute expiration time
+	expirationTime := time.Now().Add(5 * time.Minute).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
 		"exp":      expirationTime,
@@ -60,6 +61,9 @@ func (s *authService) Login(username string, password string) (string, error) {
 	}
 
 	s.logger.Info().Str("username", username).Msg("User logged in successfully")
+
+	c.SetCookie("jwt", tokenString, 300, "/", "localhost", false, true)
+	c.Set("username", username)
 
 	return tokenString, nil
 }

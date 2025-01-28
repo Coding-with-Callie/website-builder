@@ -35,7 +35,7 @@ func Login(c *gin.Context, authService AuthService) {
 	}
 
 	// Call the auth service to login
-	access_token, err := authService.Login(requestBody.Username, requestBody.Password)
+	access_token, err := authService.Login(c, requestBody.Username, requestBody.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Invalid username or password",

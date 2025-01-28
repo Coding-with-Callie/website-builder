@@ -63,6 +63,12 @@ func requestLogger(logger zerolog.Logger) gin.HandlerFunc {
 			event = logger.Error()
 		}
 
+		// Get username from context if it exists
+		username, exists := c.Get("username")
+		if exists {
+			event.Str("username", username.(string))
+		}
+
 		event.
 			Str("method", c.Request.Method).
 			Str("path", path).
