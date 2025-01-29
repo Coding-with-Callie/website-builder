@@ -73,7 +73,8 @@ func (s *authService) GetUserDetails(username string) (map[string]interface{}, e
 	var firstName string
 	var lastName string
 	var role string
-	err := s.db.QueryRow("SELECT first_name, last_name, role FROM users WHERE username = $1", username).Scan(&firstName, &lastName, &role)
+	var photo string
+	err := s.db.QueryRow("SELECT first_name, last_name, role, photo FROM users WHERE username = $1", username).Scan(&firstName, &lastName, &role, &photo)
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +84,7 @@ func (s *authService) GetUserDetails(username string) (map[string]interface{}, e
 		"firstName": firstName,
 		"lastName":  lastName,
 		"role":      role,
+		"photo":     photo,
 	}
 
 	return userDetails, nil

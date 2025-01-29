@@ -11,10 +11,12 @@ function App() {
     return <Spinner size="xl" />;
   }
 
+  console.log("user", user);
+
   return (
-    <VStack>
+    <VStack justifyContent={"space-between"} height="100vh">
       {/* Header needs user details too */}
-      <Header />
+      <Header photo={user?.photo} />
       <Outlet context={user} />
       <Footer />
     </VStack>

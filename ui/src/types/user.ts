@@ -1,13 +1,11 @@
 export type User = {
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   role: string;
-  username: string;
+  username?: string;
+  photo?: string;
 };
 
 export const guestUser: User = {
-  firstName: "guest",
-  lastName: "guest",
   role: "guest",
-  username: "guest",
 };
