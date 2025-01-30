@@ -1,12 +1,13 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-import { Provider } from "./components/ui/provider";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Temp from "./components/Temp.tsx";
+import { ChakraProvider } from "@chakra-ui/react";
+import { system } from "./theme.ts";
 
 createRoot(document.getElementById("root")!).render(
-  <Provider>
+  <ChakraProvider value={system}>
     <Router>
       <Routes>
         <Route path="/" element={<App />}>
@@ -14,5 +15,5 @@ createRoot(document.getElementById("root")!).render(
         </Route>
       </Routes>
     </Router>
-  </Provider>
+  </ChakraProvider>
 );
