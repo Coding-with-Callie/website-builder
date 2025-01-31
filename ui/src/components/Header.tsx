@@ -1,8 +1,8 @@
-import { Heading, HStack, Image } from "@chakra-ui/react";
+import { HStack, Image } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import sloth from "../assets/sloth.png";
 import { Avatar } from "./ui/avatar";
-import { Logo } from "../style/logo-recipe";
+import { Heading } from "../style/heading-recipe";
 
 type Props = {
   photo?: string;
@@ -14,8 +14,7 @@ const Header = ({ photo }: Props) => {
       <Link to="/">
         <HStack>
           <Image src={sloth} h={"80px"} borderRadius="50%" />
-          <Logo>Coding with Callie</Logo>
-          <Heading textStyle="logo">Coding with Callie</Heading>
+          <Heading type="header">Coding with Callie</Heading>
         </HStack>
       </Link>
       {photo && <Avatar name={"callie"} src={photo} size="2xl" />}
