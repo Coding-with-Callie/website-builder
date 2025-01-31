@@ -10,9 +10,7 @@ const Temp = () => {
       {user.role == "guest" ? (
         <>
           <h1>Guest is logged in</h1>
-          <Text textStyle="body">
-            This is some sample text that I want to try out
-          </Text>
+          <Text>This is some sample text that I want to try out</Text>
           <h1>No one is logged in</h1>
         </>
       ) : (

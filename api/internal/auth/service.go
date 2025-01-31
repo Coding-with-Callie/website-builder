@@ -3,7 +3,6 @@ package auth
 import (
 	"api/internal/config"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -37,7 +36,7 @@ func (s *authService) Login(c *gin.Context, username string, password string) (s
 	var storedPassword string
 	err := s.db.QueryRow("SELECT password FROM users WHERE username = $1", username).Scan(&storedPassword)
 	if err != nil {
-		fmt.Println(err.Error())
+		s.logger.Error().Err(err).Str("username", username).Msg("Login failed")
 		return "", err
 	}
 
