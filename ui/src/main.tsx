@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Temp from "./components/Temp.tsx";
 import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "./style/theme.ts";
+// @ts-expect-error - no types available
 import "@fontsource/pacifico";
 
 createRoot(document.getElementById("root")!).render(
