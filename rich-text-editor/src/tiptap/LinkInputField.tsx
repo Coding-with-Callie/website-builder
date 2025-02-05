@@ -46,7 +46,7 @@ const LinkInputField: React.FC<LinkInputFieldProps> = ({ editor }) => {
             type="text" 
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
-            placeholder='Enter URL'
+            placeholder='Enter link + Press Enter'
             onKeyDown={(e) => e.key === "Enter" && setLink()} //allow pressing enter to set link
             autoFocus
         />
