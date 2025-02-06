@@ -10,7 +10,13 @@ type Props = {
 
 const Header = ({ photo }: Props) => {
   return (
-    <HStack w="100%" p={4} justifyContent="space-between">
+    <HStack
+      w="100%"
+      p={4}
+      justifyContent="space-between"
+      boxShadow="lg"
+      bg="white"
+    >
       <Link to="/">
         <HStack>
           <Image src={sloth} h={"80px"} borderRadius="50%" />
