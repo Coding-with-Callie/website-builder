@@ -16,6 +16,7 @@ func RegisterAuthHandlers(router *gin.Engine, authService AuthService, logger ze
 	router.POST("/login", func(c *gin.Context) { Login(c, authService) })
 
 	// Protected routes
+	// Use the AuthMiddleware to validate the JWT before accessing these routes
 	authorized := router.Group("/auth/")
 	authorized.Use(AuthMiddleware(logger))
 	{

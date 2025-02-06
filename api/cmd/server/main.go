@@ -43,32 +43,41 @@ func main() {
 
 func requestLogger(logger zerolog.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Record the start time
 		start := time.Now()
+
+		// Get the request path and raw query
 		path := c.Request.URL.Path
 		raw := c.Request.URL.RawQuery
 
+		// Process the request to get the final status code, response time, etc.
 		c.Next()
 
+		// Record the end time
 		end := time.Now()
 
+		// Reconstruct the full path with query parameters
 		if raw != "" {
 			path = path + "?" + raw
 		}
 
+		// Create an info level log event and message
 		event := logger.Info()
-		status := c.Writer.Status()
 		message := "Request completed"
 
+		// Check the status code and adjust the log level if necessary
+		status := c.Writer.Status()
 		if status >= 400 {
 			event = logger.Error()
 		}
 
-		// Get username from context if it exists
+		// Get username from context if it exists and add it to the log event
 		username, exists := c.Get("username")
 		if exists {
 			event.Str("username", username.(string))
 		}
 
+		// Add additional fields to the log event
 		event.
 			Str("method", c.Request.Method).
 			Str("path", path).
