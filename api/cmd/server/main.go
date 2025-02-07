@@ -22,6 +22,9 @@ func main() {
 	// Connect to the database
 	database.Connect(logger)
 
+	// Create tables in the database
+	database.CreateTables(logger)
+
 	// Seed the database with an admin user
 	database.Seed(logger)
 

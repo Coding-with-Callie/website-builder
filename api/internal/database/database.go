@@ -55,13 +55,21 @@ func Connect(logger zerolog.Logger) {
 
 	logger.Info().Msg("Connected to website builder database")
 
+	DB = db
+}
+
+func CreateTables(logger zerolog.Logger) {
 	// Create a users table if it doesn't exist
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, first_name VARCHAR(50), last_name VARCHAR(50), email VARCHAR(50), username VARCHAR(50), password VARCHAR(255), role VARCHAR(50), photo VARCHAR(255), UNIQUE(email, username))")
+	_, err := DB.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, first_name VARCHAR(50), last_name VARCHAR(50), email VARCHAR(50), username VARCHAR(50), password VARCHAR(255), role VARCHAR(50), photo VARCHAR(255), UNIQUE(email, username))")
 	if err != nil {
 		logger.Fatal().Err(err).Msg("Failed to create users table")
 	}
 
-	DB = db
+	// Create a pages table if it doesn't exist
+	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS pages (id SERIAL PRIMARY KEY, create_date TIMESTAMP, publish_date TIMESTAMP, modify_date TIMESTAMP, menu_name VARCHAR(50), heading VARCHAR(255), path VARCHAR(50), creator_id INT, metadata JSONB, FOREIGN KEY (creator_id) REFERENCES users(id), UNIQUE(menu_name, path))")
+	if err != nil {
+		logger.Fatal().Err(err).Msg("Failed to create pages table")
+	}
 }
 
 func Seed(logger zerolog.Logger) {
