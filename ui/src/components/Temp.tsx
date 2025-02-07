@@ -1,7 +1,6 @@
 import { useOutletContext } from "react-router-dom";
 import { User } from "../types/user";
-import { Heading } from "../style/heading-recipe";
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
 const Temp = () => {
   const user = useOutletContext() as User;
@@ -9,11 +8,11 @@ const Temp = () => {
   return (
     <Box p={5} bg="white" boxShadow="lg" borderRadius="lg">
       {user.role == "guest" ? (
-        <Heading type="page">Guest is logged in</Heading>
+        <Text>Guest is logged in</Text>
       ) : (
-        <h1>
+        <Text>
           {user.firstName} {user.lastName} is logged in
-        </h1>
+        </Text>
       )}
     </Box>
   );

@@ -1,18 +1,22 @@
 import { chakra, defineRecipe } from "@chakra-ui/react";
+import { heading } from "./theme";
 
 export const headingRecipe = defineRecipe({
   base: {
-    color: "#3e7aa6",
+    color: heading,
     fontWeight: "bold",
   },
   variants: {
     type: {
       header: {
-        fontSize: "36px",
+        fontSize: "32px",
         fontFamily: "Pacifico",
       },
       page: {
         fontSize: "24px",
+      },
+      footer: {
+        fontSize: "18px",
       },
     },
   },
