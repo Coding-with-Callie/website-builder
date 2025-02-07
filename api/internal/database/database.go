@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/rs/zerolog"
+	"golang.org/x/crypto/bcrypt"
 
 	_ "github.com/lib/pq"
 )
@@ -55,10 +56,27 @@ func Connect(logger zerolog.Logger) {
 	logger.Info().Msg("Connected to website builder database")
 
 	// Create a users table if it doesn't exist
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, first_name VARCHAR(50), last_name VARCHAR(50), email VARCHAR(50), username VARCHAR(50), password VARCHAR(255), role VARCHAR(50), photo VARCHAR(255))")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, first_name VARCHAR(50), last_name VARCHAR(50), email VARCHAR(50), username VARCHAR(50), password VARCHAR(255), role VARCHAR(50), photo VARCHAR(255), UNIQUE(email, username))")
 	if err != nil {
 		logger.Fatal().Err(err).Msg("Failed to create users table")
 	}
 
 	DB = db
+}
+
+func Seed(logger zerolog.Logger) {
+	// Get the admin password from the config
+	password := config.AppConfig.AdminPassword
+
+	// Hash the admin password before storing it in the database
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		logger.Error().Err(err).Msg("Failed to hash the admin password")
+	}
+
+	// Create an admin user if it doesn't exist
+	_, err = DB.Exec("INSERT INTO users (first_name, last_name, email, username, password, role, photo) VALUES ('Callie', 'Stoscup', 'calliestoscup@gmail.com', 'calliestoscup', $1, 'admin', '') ON CONFLICT (username, email) DO NOTHING", hashedPassword)
+	if err != nil {
+		logger.Error().Err(err).Msg("Failed to create test user")
+	}
 }

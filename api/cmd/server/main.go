@@ -22,6 +22,9 @@ func main() {
 	// Connect to the database
 	database.Connect(logger)
 
+	// Seed the database with an admin user
+	database.Seed(logger)
+
 	router := gin.New()
 	router.Use(requestLogger(logger))
 

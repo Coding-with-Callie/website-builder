@@ -7,9 +7,10 @@ import (
 )
 
 type Config struct {
-	DBUser     string
-	DBPassword string
-	JWTSecret  string
+	DBUser        string
+	DBPassword    string
+	JWTSecret     string
+	AdminPassword string
 }
 
 var AppConfig Config
@@ -21,8 +22,9 @@ func LoadConfig() {
 	}
 
 	AppConfig = Config{
-		DBUser:     os.Getenv("DB_USER"),
-		DBPassword: os.Getenv("DB_PASSWORD"),
-		JWTSecret:  os.Getenv("JWT_SECRET"),
+		DBUser:        os.Getenv("DB_USER"),
+		DBPassword:    os.Getenv("DB_PASSWORD"),
+		JWTSecret:     os.Getenv("JWT_SECRET"),
+		AdminPassword: os.Getenv("ADMIN_PASSWORD"),
 	}
 }
