@@ -33,8 +33,8 @@ const Header = ({ photo, pages }: Props) => {
             </Link>
           );
         })}
+        {photo && <Avatar name={"callie"} src={photo} size="xl" ml={4} />}
       </HStack>
-      {photo && <Avatar name={"callie"} src={photo} size="xl" />}
     </HStack>
   );
 };
