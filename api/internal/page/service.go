@@ -96,8 +96,6 @@ func (s *pageService) MovePage(id string, direction string) {
 		s.logger.Error().Err(err).Msg("Failed to get current page order")
 	}
 
-	s.logger.Info().Int("Current Page Order", currentPageOrder).Msg("Got page order")
-
 	// Edit the page order based on the direction
 	if direction == "up" {
 		// Get the page above the current page
@@ -108,8 +106,6 @@ func (s *pageService) MovePage(id string, direction string) {
 			s.logger.Error().Err(err).Msg("Failed to get above page order")
 		}
 
-		s.logger.Info().Int("order", abovePageOrder).Int("id", abovePageID).Msg("Got above page order")
-
 		// Swap the current and above page order
 		// Update the current page order
 		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", abovePageOrder, id)
@@ -117,15 +113,13 @@ func (s *pageService) MovePage(id string, direction string) {
 			s.logger.Error().Err(err).Msg("Failed to update current page order")
 		}
 
-		s.logger.Info().Msg("Updated current page order")
-
 		// Update the above page order
 		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", currentPageOrder, abovePageID)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to update above page order")
 		}
 
-		s.logger.Info().Msg("Updated above page order")
+		s.logger.Info().Str("page_id", id).Str("direction", direction).Msg("Changed page order")
 	} else {
 		// Get the page below the current page
 		var belowPageOrder int
@@ -135,8 +129,6 @@ func (s *pageService) MovePage(id string, direction string) {
 			s.logger.Error().Err(err).Msg("Failed to get below page order")
 		}
 
-		s.logger.Info().Int("order", belowPageOrder).Int("id", belowPageID).Msg("Got below page order")
-
 		// Swap the current and below page order
 		// Update the current page order
 		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", belowPageOrder, id)
@@ -144,14 +136,12 @@ func (s *pageService) MovePage(id string, direction string) {
 			s.logger.Error().Err(err).Msg("Failed to update current page order")
 		}
 
-		s.logger.Info().Msg("Updated current page order")
-
 		// Update the below page order
 		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", currentPageOrder, belowPageID)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to update below page order")
 		}
 
-		s.logger.Info().Msg("Updated below page order")
+		s.logger.Info().Str("page_id", id).Str("direction", direction).Msg("Changed page order")
 	}
 }
