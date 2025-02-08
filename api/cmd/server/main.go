@@ -34,20 +34,17 @@ func main() {
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
 	}))
+
+	// Create page service
+	pageService := page.NewPageService(database.DB, logger)
 
 	// Create auth service and register auth handlers
 	authService := auth.NewAuthService(database.DB, logger)
-	auth.RegisterAuthHandlers(router, authService, logger)
-
-	// Create page service and register page handlers
-	pageService := page.NewPageService(database.DB, logger)
-	page.RegisterPageHandlers(router, pageService, logger)
+	auth.RegisterAuthHandlers(router, authService, pageService, logger)
 
 	router.Run(":8080")
 }

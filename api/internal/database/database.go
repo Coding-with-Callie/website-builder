@@ -95,8 +95,14 @@ func Seed(logger zerolog.Logger) {
 		logger.Error().Err(err).Msg("Failed to create home page")
 	}
 
+	// Create a login page if it doesn't exist
+	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), NOW(), null, 'Admin Login', 'Admin Login Page', '/login', 1, null, 2) ON CONFLICT (menu_name, path) DO NOTHING")
+	if err != nil {
+		logger.Error().Err(err).Msg("Failed to create login page")
+	}
+
 	// Create a wildcard page if it doesn't exist
-	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), NOW(), null, '', 'Page Not Found', '/*', 1, null, 2) ON CONFLICT (menu_name, path) DO NOTHING")
+	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), NOW(), null, '', 'Page Not Found', '/*', 1, null, 3) ON CONFLICT (menu_name, path) DO NOTHING")
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create wildcard page")
 	}

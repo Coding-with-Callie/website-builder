@@ -67,6 +67,12 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 			}
 		}
 
+		if role != "guest" {
+			if path == "/login" {
+				show = false
+			}
+		}
+
 		page := Page{
 			CreateDate:  createDate,
 			PublishDate: publishDate,

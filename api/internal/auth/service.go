@@ -3,6 +3,7 @@ package auth
 import (
 	"api/internal/config"
 	"database/sql"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +13,7 @@ import (
 )
 
 type AuthService interface {
-	Login(c *gin.Context, username string, password string) (string, error)
+	Login(c *gin.Context, username string, password string) (map[string]interface{}, error)
 	GetUserDetails(username string) (map[string]interface{}, error)
 }
 
@@ -29,7 +30,7 @@ func NewAuthService(db *sql.DB, logger zerolog.Logger) AuthService {
 	return &authService{db: db, jwtSecret: jwtSecret, logger: logger}
 }
 
-func (s *authService) Login(c *gin.Context, username string, password string) (string, error) {
+func (s *authService) Login(c *gin.Context, username string, password string) (map[string]interface{}, error) {
 	s.logger.Info().Str("username", username).Msg("Logging in user")
 
 	// Get the user from the database
@@ -37,14 +38,14 @@ func (s *authService) Login(c *gin.Context, username string, password string) (s
 	err := s.db.QueryRow("SELECT password FROM users WHERE username = $1", username).Scan(&storedPassword)
 	if err != nil {
 		s.logger.Error().Err(err).Str("username", username).Msg("Login failed")
-		return "", err
+		return nil, err
 	}
 
 	// Check if the password is correct
 	err = bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
 	if err != nil {
 		s.logger.Error().Err(err).Str("username", username).Msg("Login failed")
-		return "", err
+		return nil, err
 	}
 
 	// Generate a JWT with a 5-minute expiration time
@@ -56,15 +57,43 @@ func (s *authService) Login(c *gin.Context, username string, password string) (s
 	tokenString, err := token.SignedString([]byte(s.jwtSecret))
 	if err != nil {
 		s.logger.Error().Err(err).Str("username", username).Msg("Login failed")
-		return "", err
+		return nil, err
 	}
 
 	s.logger.Info().Str("username", username).Msg("User logged in successfully")
 
-	c.SetCookie("jwt", tokenString, 300, "/", "localhost", false, true)
-	c.Set("username", username)
+	// Create an HTTP only cookie with the JWT
+	cookie := &http.Cookie{
+		Name:     "jwt",
+		Value:    tokenString,
+		Expires:  time.Unix(expirationTime, 0),
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	}
 
-	return tokenString, nil
+	// Create a non-HTTP only cookie to indicate the user is logged in
+	cookieLoggedIn := &http.Cookie{
+		Name:     "loggedIn",
+		Value:    "true",
+		Expires:  time.Unix(expirationTime, 0),
+		HttpOnly: false,
+		SameSite: http.SameSiteLaxMode,
+	}
+
+	// Set the cookies in the response
+	http.SetCookie(c.Writer, cookie)
+	http.SetCookie(c.Writer, cookieLoggedIn)
+
+	// Set the username and role in the context
+	c.Set("username", username)
+	c.Set("role", "admin")
+
+	userDetails, err := s.GetUserDetails(username)
+	if err != nil {
+		return nil, err
+	}
+
+	return userDetails, nil
 }
 
 func (s *authService) GetUserDetails(username string) (map[string]interface{}, error) {

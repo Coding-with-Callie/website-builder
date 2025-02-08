@@ -8,7 +8,8 @@ export const useUser = () => {
 
   useEffect(() => {
     // No need to call API if there is no JWT cookie
-    if (!document.cookie.includes("jwt")) {
+    if (!document.cookie.includes("loggedIn")) {
+      console.log("No JWT cookie found");
       setLoading(false);
       return;
     }
@@ -16,7 +17,7 @@ export const useUser = () => {
     // Call the API to fetch user details
     // The API will return the real user or the guest user depending on the vality of the JWT cookie
     axiosPrivate
-      .get("/auth/user-details")
+      .get("/user-details")
       .then((response) => {
         setUser(response.data.user);
       })
@@ -29,5 +30,5 @@ export const useUser = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  return { loading, user };
+  return { loading, user, setUser };
 };

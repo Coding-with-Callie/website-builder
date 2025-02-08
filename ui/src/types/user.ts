@@ -9,3 +9,8 @@ export type User = {
 export const guestUser: User = {
   role: "guest",
 };
+
+export type UserContext = {
+  user: User;
+  setUser: (user: User) => void;
+};
