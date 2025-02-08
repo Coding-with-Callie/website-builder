@@ -27,8 +27,6 @@ const LoginForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(initialValues);
-
     axiosPrivate
       .post("/login", initialValues)
       .then((response) => {

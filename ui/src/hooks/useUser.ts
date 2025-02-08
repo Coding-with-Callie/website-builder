@@ -10,7 +10,6 @@ export const useUser = () => {
   useEffect(() => {
     // No need to call API if there is no JWT cookie
     if (!document.cookie.includes("loggedIn")) {
-      console.log("No JWT cookie found");
       setLoading(false);
       return;
     }

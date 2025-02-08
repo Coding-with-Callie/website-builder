@@ -20,8 +20,6 @@ function App() {
     return <Spinner size="xl" />;
   }
 
-  console.log("user", user);
-
   return (
     <VStack justifyContent={"space-between"} height="100vh">
       <Header photo={user?.photo} pages={pages} role={user.role} />
