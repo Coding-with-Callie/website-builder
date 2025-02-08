@@ -31,7 +31,6 @@ const LoginForm = () => {
       .post("/login", initialValues)
       .then((response) => {
         navigate("/");
-        console.log("login response", response.data);
         setUser(response.data.user);
         setLocalPages(response.data.pages);
       })
