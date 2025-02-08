@@ -14,9 +14,9 @@ export const useUser = () => {
     }
 
     // Call the API to fetch user details
-    // The API will return the real user or the guest user depending on the validity of the JWT cookie
+    // The API will return the real user or the guest user depending on the vality of the JWT cookie
     axiosPrivate
-      .get("/user-details")
+      .get("/auth/user-details")
       .then((response) => {
         setUser(response.data.user);
       })

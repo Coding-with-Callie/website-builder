@@ -8,13 +8,13 @@ import (
 )
 
 func RegisterPageHandlers(router *gin.Engine, pageService PageService, logger zerolog.Logger) {
-	router.GET("/pages", func(c *gin.Context) { GetPages(c, pageService) })
+	router.GET("/pages", auth.AuthMiddleware(logger), func(c *gin.Context) { GetPages(c, pageService) })
 	router.POST("/pages", auth.AuthMiddleware(logger), func(c *gin.Context) { CreatePage(c, pageService) })
 	router.PATCH("/pages/:path/move", auth.AuthMiddleware(logger), func(c *gin.Context) { MovePage(c, pageService) })
 }
 
 func GetPages(c *gin.Context, pageService PageService) {
-	pages, err := pageService.GetPages()
+	pages, err := pageService.GetPages(c)
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Failed to get pages"})
 		return

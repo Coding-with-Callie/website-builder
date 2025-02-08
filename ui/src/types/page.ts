@@ -7,4 +7,5 @@ export type PageType = {
   modify_date: Date | null;
   path: string;
   publish_date: Date | null;
+  show?: boolean;
 };

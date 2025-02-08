@@ -9,7 +9,7 @@ import (
 )
 
 type PageService interface {
-	GetPages() ([]Page, error)
+	GetPages(c *gin.Context) ([]Page, error)
 	CreatePage(page Page) error
 	MovePage(c *gin.Context, id string, direction string) error
 }
@@ -34,7 +34,10 @@ func NewPageService(db *sql.DB, logger zerolog.Logger) PageService {
 	return &pageService{db: db, logger: logger}
 }
 
-func (s *pageService) GetPages() ([]Page, error) {
+func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
+	// Get role from context
+	role, _ := c.Get("role")
+
 	rows, err := s.db.Query("SELECT create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata FROM pages ORDER BY page_order ASC")
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to get pages")
@@ -56,6 +59,14 @@ func (s *pageService) GetPages() ([]Page, error) {
 			return nil, err
 		}
 
+		show := true
+
+		if role == "guest" {
+			if publishDate == nil {
+				show = false
+			}
+		}
+
 		page := Page{
 			CreateDate:  createDate,
 			PublishDate: publishDate,
@@ -66,7 +77,10 @@ func (s *pageService) GetPages() ([]Page, error) {
 			CreatorID:   creatorID,
 			Metadata:    metadata,
 		}
-		pages = append(pages, page)
+
+		if show {
+			pages = append(pages, page)
+		}
 	}
 
 	return pages, nil

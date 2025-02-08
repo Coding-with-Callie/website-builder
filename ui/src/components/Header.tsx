@@ -8,6 +8,7 @@ import { PageType } from "../types/page";
 type Props = {
   photo?: string;
   pages: PageType[];
+  role: "admin" | "guest";
 };
 
 const Header = ({ photo, pages }: Props) => {
@@ -29,9 +30,11 @@ const Header = ({ photo, pages }: Props) => {
         {pages.map((page) => {
           return (
             <>
-              {page.path !== "/*" && (
+              {page.menu_name && (
                 <Link to={page.path} key={page.path}>
-                  <Heading type="nav">{page.menu_name}</Heading>
+                  <Heading type="nav" mx={2}>
+                    {page.menu_name}
+                  </Heading>
                 </Link>
               )}
             </>

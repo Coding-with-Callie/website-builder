@@ -17,7 +17,7 @@ function App({ pages }: { pages: PageType[] }) {
 
   return (
     <VStack justifyContent={"space-between"} height="100vh">
-      <Header photo={user?.photo} pages={pages} />
+      <Header photo={user?.photo} pages={pages} role={user.role} />
       <Outlet context={user} />
       <Footer />
     </VStack>

@@ -6,12 +6,12 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "./style/theme.ts";
 // @ts-expect-error - no types available
 import "@fontsource/pacifico";
-import { axiosPublic } from "./utils/axios.ts";
+import { axiosPrivate } from "./utils/axios.ts";
 import Page from "./components/Page.tsx";
 import { PageType } from "./types/page.ts";
 
 const getPages = async (): Promise<PageType[]> => {
-  const response = await axiosPublic.get("/pages");
+  const response = await axiosPrivate.get("/pages");
   return response.data.pages;
 };
 

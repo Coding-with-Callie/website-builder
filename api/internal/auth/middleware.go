@@ -14,6 +14,13 @@ func AuthMiddleware(logger zerolog.Logger) gin.HandlerFunc {
 		// Get the JWT from the cookie
 		tokenString, err := c.Cookie("jwt")
 		if err != nil {
+			// If the request is to get the pages, add role 'guest' to context
+			if c.Request.URL.Path == "/pages" && c.Request.Method == "GET" {
+				c.Set("role", "guest")
+				logger.Info().Str("role", "guest").Msg("AuthMiddleware: Get pages")
+				return
+			}
+
 			// If the JWT is not present, log the error and return an unauthorized response
 			logger.Error().Err(err).Msg("AuthMiddleware")
 
@@ -40,6 +47,13 @@ func AuthMiddleware(logger zerolog.Logger) gin.HandlerFunc {
 					"username":  "guest",
 				}})
 				c.Abort()
+				return
+			}
+
+			// If the request is to get the pages, add role 'guest' to context
+			if c.Request.URL.Path == "/pages" && c.Request.Method == "GET" {
+				c.Set("role", "guest")
+				logger.Info().Str("role", "guest").Msg("AuthMiddleware: Get pages")
 				return
 			}
 
