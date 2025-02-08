@@ -9,8 +9,11 @@ type Props = {
 
 const Page = ({ page }: Props) => {
   if (page.path === "/login") {
+    console.log("login");
     return <LoginForm />;
   }
+
+  console.log("page", page.path);
 
   return (
     <Box p={5} bg="white" boxShadow="lg" borderRadius="lg">

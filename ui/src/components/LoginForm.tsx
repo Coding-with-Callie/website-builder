@@ -2,8 +2,9 @@ import { Button, Fieldset, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import { Heading } from "../style/heading-recipe";
 import { axiosPrivate } from "../utils/axios";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { OutletContext } from "../types/outlet";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../hooks/useUser";
+import usePages from "../hooks/usePages";
 
 const LoginForm = () => {
   const [initialValues, setInitialValues] = useState({
@@ -11,7 +12,8 @@ const LoginForm = () => {
     password: "",
   });
 
-  const { setUser, setLocalPages } = useOutletContext() as OutletContext;
+  const { setUser } = useUser();
+  const { setPages } = usePages();
 
   const navigate = useNavigate();
 
@@ -32,7 +34,7 @@ const LoginForm = () => {
       .then((response) => {
         navigate("/");
         setUser(response.data.user);
-        setLocalPages(response.data.pages);
+        setPages(response.data.pages);
       })
       .catch((error) => {
         console.error(error);

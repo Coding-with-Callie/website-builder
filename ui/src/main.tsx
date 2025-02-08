@@ -1,36 +1,21 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "./style/theme.ts";
 // @ts-expect-error - no types available
 import "@fontsource/pacifico";
-import { axiosPrivate } from "./utils/axios.ts";
-import Page from "./components/Page.tsx";
-import { PageType } from "./types/page.ts";
+import { PagesProvider } from "./components/PagesProvider.tsx";
+import AppWrapper from "./components/AppWrapper.tsx";
 
-const getPages = async (): Promise<PageType[]> => {
-  const response = await axiosPrivate.get("/pages");
-  return response.data.pages;
-};
-
-const loadApp = async () => {
-  const pages = await getPages();
-
-  createRoot(document.getElementById("root")!).render(
-    <ChakraProvider value={system}>
+createRoot(document.getElementById("root")!).render(
+  <ChakraProvider value={system}>
+    <PagesProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<App pages={pages} />}>
-            {pages.map((page) => (
-              <Route path={page.path} element={<Page page={page} />} />
-            ))}
-          </Route>
+          <Route path="/*" element={<AppWrapper />} />
         </Routes>
       </Router>
-    </ChakraProvider>
-  );
-};
-
-loadApp();
+    </PagesProvider>
+  </ChakraProvider>
+);
