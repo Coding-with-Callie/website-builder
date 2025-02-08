@@ -6,16 +6,19 @@ import { system } from "./style/theme.ts";
 // @ts-expect-error - no types available
 import "@fontsource/pacifico";
 import { PagesProvider } from "./components/PagesProvider.tsx";
-import AppWrapper from "./components/AppWrapper.tsx";
+import App from "./App.tsx";
+import { UserProvider } from "./components/UserProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <ChakraProvider value={system}>
     <PagesProvider>
-      <Router>
-        <Routes>
-          <Route path="/*" element={<AppWrapper />} />
-        </Routes>
-      </Router>
+      <UserProvider>
+        <Router>
+          <Routes>
+            <Route path="/*" element={<App />} />
+          </Routes>
+        </Router>
+      </UserProvider>
     </PagesProvider>
   </ChakraProvider>
 );

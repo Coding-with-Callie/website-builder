@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { guestUser, User } from "../types/user";
 import { axiosPrivate } from "../utils/axios";
+import { UserContextType } from "../contexts/UserContext";
+import { useUserContext } from "./useUserContext";
 
 export const useUser = () => {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User>(guestUser);
+  const { user, setUser } = useUserContext() as UserContextType;
 
   useEffect(() => {
     // No need to call API if there is no JWT cookie
