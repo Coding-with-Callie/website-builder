@@ -10,7 +10,7 @@ import (
 func RegisterPageHandlers(router *gin.Engine, pageService PageService, logger zerolog.Logger) {
 	router.GET("/pages", func(c *gin.Context) { GetPages(c, pageService) })
 	router.POST("/pages", auth.AuthMiddleware(logger), func(c *gin.Context) { CreatePage(c, pageService) })
-	router.PATCH("/pages/:id/move", auth.AuthMiddleware(logger), func(c *gin.Context) { MovePage(c, pageService) })
+	router.PATCH("/pages/:path/move", auth.AuthMiddleware(logger), func(c *gin.Context) { MovePage(c, pageService) })
 }
 
 func GetPages(c *gin.Context, pageService PageService) {
@@ -41,10 +41,14 @@ func CreatePage(c *gin.Context, pageService PageService) {
 }
 
 func MovePage(c *gin.Context, pageService PageService) {
-	id := c.Param("id")
+	path := c.Param("path")
 	direction := c.Query("direction")
 
-	pageService.MovePage(id, direction)
+	err := pageService.MovePage(c, path, direction)
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Failed to move page"})
+		return
+	}
 
 	c.JSON(200, gin.H{"message": "Page moved"})
 }

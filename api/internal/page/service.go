@@ -4,13 +4,14 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 )
 
 type PageService interface {
 	GetPages() ([]Page, error)
 	CreatePage(page Page) error
-	MovePage(id string, direction string)
+	MovePage(c *gin.Context, id string, direction string) error
 }
 
 type Page struct {
@@ -88,60 +89,84 @@ func (s *pageService) CreatePage(page Page) error {
 	return nil
 }
 
-func (s *pageService) MovePage(id string, direction string) {
+func (s *pageService) MovePage(c *gin.Context, path string, direction string) error {
+	// Get the username from the context
+	username, _ := c.Get("username")
+
+	path = "/" + path
+
+	s.logger.Info().Str("path", path).Str("direction", direction).Str("username", username.(string)).Msg("Moving page")
+
 	// Get the current page order
 	var currentPageOrder int
-	err := s.db.QueryRow("SELECT page_order FROM pages WHERE id = $1", id).Scan(&currentPageOrder)
+	err := s.db.QueryRow("SELECT page_order FROM pages WHERE path = $1", path).Scan(&currentPageOrder)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to get current page order")
+		return err
 	}
 
 	// Edit the page order based on the direction
 	if direction == "up" {
+		if currentPageOrder == 3 {
+			s.logger.Info().Str("path", path).Str("direction", direction).Str("username", username.(string)).Msg("Page is already at the top")
+			return nil
+		}
+
 		// Get the page above the current page
 		var abovePageOrder int
-		var abovePageID int
-		err = s.db.QueryRow("SELECT page_order, id FROM pages WHERE page_order < $1 ORDER BY page_order DESC LIMIT 1", currentPageOrder).Scan(&abovePageOrder, &abovePageID)
+		var abovePagePath string
+		err = s.db.QueryRow("SELECT page_order, path FROM pages WHERE page_order < $1 ORDER BY page_order DESC LIMIT 1", currentPageOrder).Scan(&abovePageOrder, &abovePagePath)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to get above page order")
+			return err
 		}
 
 		// Swap the current and above page order
 		// Update the current page order
-		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", abovePageOrder, id)
+		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE path = $2", abovePageOrder, path)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to update current page order")
+			return err
 		}
 
 		// Update the above page order
-		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", currentPageOrder, abovePageID)
+		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE path = $2", currentPageOrder, abovePagePath)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to update above page order")
+			return err
 		}
 
-		s.logger.Info().Str("page_id", id).Str("direction", direction).Msg("Changed page order")
+		s.logger.Info().Str("path", path).Str("direction", direction).Str("username", username.(string)).Msg("Swapped page orders")
 	} else {
 		// Get the page below the current page
 		var belowPageOrder int
-		var belowPageID int
-		err = s.db.QueryRow("SELECT page_order, id FROM pages WHERE page_order > $1 ORDER BY page_order ASC LIMIT 1", currentPageOrder).Scan(&belowPageOrder, &belowPageID)
+		var belowPagePath string
+		err = s.db.QueryRow("SELECT page_order, path FROM pages WHERE page_order > $1 ORDER BY page_order ASC LIMIT 1", currentPageOrder).Scan(&belowPageOrder, &belowPagePath)
 		if err != nil {
+			if err == sql.ErrNoRows {
+				s.logger.Info().Str("path", path).Str("direction", direction).Str("username", username.(string)).Msg("Page is already at the bottom")
+				return nil
+			}
+
 			s.logger.Error().Err(err).Msg("Failed to get below page order")
+			return err
 		}
 
 		// Swap the current and below page order
 		// Update the current page order
-		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", belowPageOrder, id)
+		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE path = $2", belowPageOrder, path)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to update current page order")
 		}
 
 		// Update the below page order
-		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", currentPageOrder, belowPageID)
+		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE path = $2", currentPageOrder, belowPagePath)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to update below page order")
+			return err
 		}
 
-		s.logger.Info().Str("page_id", id).Str("direction", direction).Msg("Changed page order")
+		s.logger.Info().Str("path", path).Str("direction", direction).Str("username", username.(string)).Msg("Changed page order")
 	}
+	return nil
 }
