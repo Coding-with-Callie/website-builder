@@ -83,7 +83,7 @@ func Seed(logger zerolog.Logger) {
 	}
 
 	// Create an admin user if it doesn't exist
-	_, err = DB.Exec("INSERT INTO users (first_name, last_name, email, username, password, role, photo) VALUES ('Callie', 'Stoscup', 'calliestoscup@gmail.com', 'calliestoscup', $1, 'admin', '') ON CONFLICT (username, email) DO NOTHING", hashedPassword)
+	_, err = DB.Exec("INSERT INTO users (first_name, last_name, email, username, password, role, photo) VALUES ('Callie', 'Stoscup', 'calliestoscup@gmail.com', 'calliestoscup', $1, 'admin', 'https://coding-with-callie.s3.us-east-1.amazonaws.com/callie.png') ON CONFLICT (username, email) DO NOTHING", hashedPassword)
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create test user")
 	}
@@ -99,5 +99,11 @@ func Seed(logger zerolog.Logger) {
 	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata) VALUES (NOW(), NOW(), null, null, 'Page Not Found', '/*', 1, null) ON CONFLICT (menu_name, path) DO NOTHING")
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create wildcard page")
+	}
+
+	// Create an about page if it doesn't exist
+	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata) VALUES (NOW(), NOW(), null, 'About', 'About Page', '/about', 1, null) ON CONFLICT (menu_name, path) DO NOTHING")
+	if err != nil {
+		logger.Error().Err(err).Msg("Failed to create about page")
 	}
 }

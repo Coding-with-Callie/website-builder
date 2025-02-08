@@ -18,8 +18,6 @@ const getPages = async (): Promise<PageType[]> => {
 const loadApp = async () => {
   const pages = await getPages();
 
-  console.log("pages", pages);
-
   if (!Array.isArray(pages)) {
     throw new Error("Pages not found");
   }
@@ -28,7 +26,7 @@ const loadApp = async () => {
     <ChakraProvider value={system}>
       <Router>
         <Routes>
-          <Route path="/" element={<App />}>
+          <Route path="/" element={<App pages={pages} />}>
             {pages.map((page) => (
               <Route path={page.path} element={<Page page={page} />} />
             ))}

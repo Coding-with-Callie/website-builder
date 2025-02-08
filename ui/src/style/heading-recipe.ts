@@ -18,6 +18,9 @@ export const headingRecipe = defineRecipe({
       footer: {
         fontSize: "18px",
       },
+      nav: {
+        fontSize: "18px",
+      },
     },
   },
 });
