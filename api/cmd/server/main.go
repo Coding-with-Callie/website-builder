@@ -1,10 +1,10 @@
 package main
 
 import (
-	"api/internal/auth"
 	"api/internal/config"
 	"api/internal/database"
-	"api/internal/page"
+	"api/internal/handlers"
+	"api/internal/services"
 	"os"
 	"time"
 
@@ -39,12 +39,12 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// Create page service
-	pageService := page.NewPageService(database.DB, logger)
+	// Create services
+	pageService := services.NewPageService(database.DB, logger)
+	authService := services.NewAuthService(database.DB, logger)
 
-	// Create auth service and register auth handlers
-	authService := auth.NewAuthService(database.DB, logger)
-	auth.RegisterAuthHandlers(router, authService, pageService, logger)
+	// Register handlers
+	handlers.RegisterAuthHandlers(router, authService, pageService, logger)
 
 	router.Run(":8080")
 }

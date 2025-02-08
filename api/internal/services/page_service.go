@@ -1,4 +1,4 @@
-package page
+package services
 
 import (
 	"database/sql"

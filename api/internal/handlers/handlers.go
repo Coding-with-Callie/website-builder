@@ -1,11 +1,13 @@
-package auth
+package handlers
 
 import (
-	"api/internal/page"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
+
+	"api/internal/middleware"
+	"api/internal/services"
 )
 
 type LoginRequestBody struct {
@@ -13,17 +15,17 @@ type LoginRequestBody struct {
 	Password string `json:"password"`
 }
 
-func RegisterAuthHandlers(router *gin.Engine, authService AuthService, pageService page.PageService, logger zerolog.Logger) {
+func RegisterAuthHandlers(router *gin.Engine, authService services.AuthService, pageService services.PageService, logger zerolog.Logger) {
 	router.POST("/login", func(c *gin.Context) { Login(c, authService, pageService) })
 
 	// Protected routes
-	router.GET("/user-details", AuthMiddleware(logger), func(c *gin.Context) { GetUserDetails(c, authService) })
-	router.GET("/pages", AuthMiddleware(logger), func(c *gin.Context) { GetPages(c, pageService) })
-	router.POST("/pages", AuthMiddleware(logger), func(c *gin.Context) { CreatePage(c, pageService) })
-	router.PATCH("/pages/:path/move", AuthMiddleware(logger), func(c *gin.Context) { MovePage(c, pageService) })
+	router.GET("/user-details", middleware.AuthMiddleware(logger), func(c *gin.Context) { GetUserDetails(c, authService) })
+	router.GET("/pages", middleware.AuthMiddleware(logger), func(c *gin.Context) { GetPages(c, pageService) })
+	router.POST("/pages", middleware.AuthMiddleware(logger), func(c *gin.Context) { CreatePage(c, pageService) })
+	router.PATCH("/pages/:path/move", middleware.AuthMiddleware(logger), func(c *gin.Context) { MovePage(c, pageService) })
 }
 
-func Login(c *gin.Context, authService AuthService, pageService page.PageService) {
+func Login(c *gin.Context, authService services.AuthService, pageService services.PageService) {
 	var requestBody LoginRequestBody
 
 	// Bind the request body
@@ -59,7 +61,7 @@ func Login(c *gin.Context, authService AuthService, pageService page.PageService
 	})
 }
 
-func GetUserDetails(c *gin.Context, authService AuthService) {
+func GetUserDetails(c *gin.Context, authService services.AuthService) {
 	username := c.MustGet("username").(string)
 
 	// Get user details from the database
@@ -77,7 +79,7 @@ func GetUserDetails(c *gin.Context, authService AuthService) {
 	})
 }
 
-func GetPages(c *gin.Context, pageService page.PageService) {
+func GetPages(c *gin.Context, pageService services.PageService) {
 	pages, err := pageService.GetPages(c)
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Failed to get pages"})
@@ -87,8 +89,8 @@ func GetPages(c *gin.Context, pageService page.PageService) {
 	c.JSON(200, gin.H{"pages": pages})
 }
 
-func CreatePage(c *gin.Context, pageService page.PageService) {
-	var page page.Page
+func CreatePage(c *gin.Context, pageService services.PageService) {
+	var page services.Page
 	err := c.BindJSON(&page)
 	if err != nil {
 		c.JSON(400, gin.H{"message": "Invalid request"})
@@ -104,7 +106,7 @@ func CreatePage(c *gin.Context, pageService page.PageService) {
 	c.JSON(200, gin.H{"message": "Page created"})
 }
 
-func MovePage(c *gin.Context, pageService page.PageService) {
+func MovePage(c *gin.Context, pageService services.PageService) {
 	path := c.Param("path")
 	direction := c.Query("direction")
 
