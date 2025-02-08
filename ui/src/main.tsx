@@ -7,6 +7,12 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { system } from "./style/theme.ts";
 // @ts-expect-error - no types available
 import "@fontsource/pacifico";
+import { axiosPublic } from "./utils/axios.ts";
+
+// Fetch pages from the API
+axiosPublic.get("/pages").then((response) => {
+  console.log(response.data);
+});
 
 createRoot(document.getElementById("root")!).render(
   <ChakraProvider value={system}>

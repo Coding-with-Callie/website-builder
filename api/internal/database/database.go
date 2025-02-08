@@ -73,7 +73,7 @@ func CreateTables(logger zerolog.Logger) {
 }
 
 func Seed(logger zerolog.Logger) {
-	// Get the admin password from the config
+	// Get the admin info from the config
 	password := config.AppConfig.AdminPassword
 
 	// Hash the admin password before storing it in the database

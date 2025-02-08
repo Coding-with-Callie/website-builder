@@ -4,6 +4,7 @@ import (
 	"api/internal/auth"
 	"api/internal/config"
 	"api/internal/database"
+	"api/internal/page"
 	"os"
 	"time"
 
@@ -43,6 +44,10 @@ func main() {
 	// Create auth service and register auth handlers
 	authService := auth.NewAuthService(database.DB, logger)
 	auth.RegisterAuthHandlers(router, authService, logger)
+
+	// Create page service and register page handlers
+	pageService := page.NewPageService(database.DB, logger)
+	page.RegisterPageHandlers(router, pageService, logger)
 
 	router.Run(":8080")
 }
