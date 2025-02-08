@@ -9,6 +9,8 @@ import (
 
 type PageService interface {
 	GetPages() ([]Page, error)
+	CreatePage(page Page) error
+	MovePage(id string, direction string)
 }
 
 type Page struct {
@@ -32,7 +34,7 @@ func NewPageService(db *sql.DB, logger zerolog.Logger) PageService {
 }
 
 func (s *pageService) GetPages() ([]Page, error) {
-	rows, err := s.db.Query("SELECT create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata FROM pages")
+	rows, err := s.db.Query("SELECT create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata FROM pages ORDER BY page_order ASC")
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to get pages")
 		return nil, err
@@ -67,4 +69,89 @@ func (s *pageService) GetPages() ([]Page, error) {
 	}
 
 	return pages, nil
+}
+
+func (s *pageService) CreatePage(page Page) error {
+	// Get the highest page order in the table
+	var maxPageOrder int
+	err := s.db.QueryRow("SELECT MAX(page_order) FROM pages").Scan(&maxPageOrder)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("Failed to get max page order")
+	}
+
+	_, err = s.db.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), $1, $2, $3, $4, $5, $6, $7, $8)", page.PublishDate, page.ModifyDate, page.MenuName, page.Heading, page.Path, page.CreatorID, page.Metadata, maxPageOrder+1)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("Failed to create page")
+		return err
+	}
+
+	return nil
+}
+
+func (s *pageService) MovePage(id string, direction string) {
+	// Get the current page order
+	var currentPageOrder int
+	err := s.db.QueryRow("SELECT page_order FROM pages WHERE id = $1", id).Scan(&currentPageOrder)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("Failed to get current page order")
+	}
+
+	s.logger.Info().Int("Current Page Order", currentPageOrder).Msg("Got page order")
+
+	// Edit the page order based on the direction
+	if direction == "up" {
+		// Get the page above the current page
+		var abovePageOrder int
+		var abovePageID int
+		err = s.db.QueryRow("SELECT page_order, id FROM pages WHERE page_order < $1 ORDER BY page_order DESC LIMIT 1", currentPageOrder).Scan(&abovePageOrder, &abovePageID)
+		if err != nil {
+			s.logger.Error().Err(err).Msg("Failed to get above page order")
+		}
+
+		s.logger.Info().Int("order", abovePageOrder).Int("id", abovePageID).Msg("Got above page order")
+
+		// Swap the current and above page order
+		// Update the current page order
+		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", abovePageOrder, id)
+		if err != nil {
+			s.logger.Error().Err(err).Msg("Failed to update current page order")
+		}
+
+		s.logger.Info().Msg("Updated current page order")
+
+		// Update the above page order
+		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", currentPageOrder, abovePageID)
+		if err != nil {
+			s.logger.Error().Err(err).Msg("Failed to update above page order")
+		}
+
+		s.logger.Info().Msg("Updated above page order")
+	} else {
+		// Get the page below the current page
+		var belowPageOrder int
+		var belowPageID int
+		err = s.db.QueryRow("SELECT page_order, id FROM pages WHERE page_order > $1 ORDER BY page_order ASC LIMIT 1", currentPageOrder).Scan(&belowPageOrder, &belowPageID)
+		if err != nil {
+			s.logger.Error().Err(err).Msg("Failed to get below page order")
+		}
+
+		s.logger.Info().Int("order", belowPageOrder).Int("id", belowPageID).Msg("Got below page order")
+
+		// Swap the current and below page order
+		// Update the current page order
+		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", belowPageOrder, id)
+		if err != nil {
+			s.logger.Error().Err(err).Msg("Failed to update current page order")
+		}
+
+		s.logger.Info().Msg("Updated current page order")
+
+		// Update the below page order
+		_, err = s.db.Exec("UPDATE pages SET page_order = $1 WHERE id = $2", currentPageOrder, belowPageID)
+		if err != nil {
+			s.logger.Error().Err(err).Msg("Failed to update below page order")
+		}
+
+		s.logger.Info().Msg("Updated below page order")
+	}
 }

@@ -66,7 +66,7 @@ func CreateTables(logger zerolog.Logger) {
 	}
 
 	// Create a pages table if it doesn't exist
-	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS pages (id SERIAL PRIMARY KEY, create_date TIMESTAMP, publish_date TIMESTAMP, modify_date TIMESTAMP, menu_name VARCHAR(50), heading VARCHAR(255), path VARCHAR(50), creator_id INT, metadata JSONB, FOREIGN KEY (creator_id) REFERENCES users(id), UNIQUE(menu_name, path))")
+	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS pages (id SERIAL PRIMARY KEY, create_date TIMESTAMP, publish_date TIMESTAMP, modify_date TIMESTAMP, menu_name VARCHAR(50), heading VARCHAR(255), path VARCHAR(50), creator_id INT, metadata JSONB, page_order INT, FOREIGN KEY (creator_id) REFERENCES users(id), UNIQUE(menu_name, path))")
 	if err != nil {
 		logger.Fatal().Err(err).Msg("Failed to create pages table")
 	}
@@ -90,20 +90,14 @@ func Seed(logger zerolog.Logger) {
 
 	// Create a home page if it doesn't exist
 	// Will need to edit this once we have multiple users
-	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata) VALUES (NOW(), NOW(), null, 'Home', 'Home Page', '/', 1, null) ON CONFLICT (menu_name, path) DO NOTHING")
+	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), NOW(), null, 'Home', 'Home Page', '/', 1, null, 1) ON CONFLICT (menu_name, path) DO NOTHING")
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create home page")
 	}
 
 	// Create a wildcard page if it doesn't exist
-	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata) VALUES (NOW(), NOW(), null, null, 'Page Not Found', '/*', 1, null) ON CONFLICT (menu_name, path) DO NOTHING")
+	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), NOW(), null, '', 'Page Not Found', '/*', 1, null, 2) ON CONFLICT (menu_name, path) DO NOTHING")
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create wildcard page")
-	}
-
-	// Create an about page if it doesn't exist
-	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata) VALUES (NOW(), NOW(), null, 'About', 'About Page', '/about', 1, null) ON CONFLICT (menu_name, path) DO NOTHING")
-	if err != nil {
-		logger.Error().Err(err).Msg("Failed to create about page")
 	}
 }

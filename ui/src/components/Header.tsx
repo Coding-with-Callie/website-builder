@@ -28,9 +28,13 @@ const Header = ({ photo, pages }: Props) => {
       <HStack>
         {pages.map((page) => {
           return (
-            <Link to={page.path} key={page.path}>
-              <Heading type="nav">{page.menu_name}</Heading>
-            </Link>
+            <>
+              {page.path !== "/*" && (
+                <Link to={page.path} key={page.path}>
+                  <Heading type="nav">{page.menu_name}</Heading>
+                </Link>
+              )}
+            </>
           );
         })}
         {photo && <Avatar name={"callie"} src={photo} size="xl" ml={4} />}
