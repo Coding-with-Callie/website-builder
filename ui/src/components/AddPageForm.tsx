@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Form from "./Form";
 import { User } from "../types/user";
 import { PageType } from "../types/page";
-import { useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 import usePages from "../hooks/usePages";
 
