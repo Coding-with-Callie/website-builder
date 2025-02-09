@@ -4,14 +4,14 @@ import {
   DialogContent,
   DialogRoot,
 } from "@chakra-ui/react";
-import AddPageForm from "./AddPageForm";
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  children: React.ReactNode;
 };
 
-const Modal = ({ open, setOpen }: Props) => {
+const Modal = ({ open, setOpen, children }: Props) => {
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)} size="lg">
       <DialogBackdrop />
@@ -22,7 +22,7 @@ const Modal = ({ open, setOpen }: Props) => {
         borderRadius="lg"
         height="100%"
       >
-        <AddPageForm />
+        {children}
         <DialogCloseTrigger />
       </DialogContent>
     </DialogRoot>

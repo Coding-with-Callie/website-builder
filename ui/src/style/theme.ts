@@ -1,5 +1,6 @@
 import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
 import { buttonRecipe } from "./button-recipe";
+import { inputRecipe } from "./input-recipe";
 
 export const heading = "#3e7aa6";
 export const text = "#2b5574";
@@ -56,10 +57,14 @@ const config = defineConfig({
           solid: { value: button },
           contrast: { value: "white" },
         },
+        input: {
+          solid: { value: text },
+        },
       },
     },
     recipes: {
       button: buttonRecipe,
+      input: inputRecipe,
     },
   },
 });

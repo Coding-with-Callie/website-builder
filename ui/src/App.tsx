@@ -23,7 +23,7 @@ function App() {
   return (
     <VStack justifyContent={"space-between"} height="100vh">
       <Header photo={user?.photo} pages={pages} role={user.role} />
-      <DynamicRoutes />
+      <DynamicRoutes role={user.role} />
       <Footer />
     </VStack>
   );
