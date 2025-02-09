@@ -38,7 +38,7 @@ const Page = ({ page, role }: Props) => {
         </Heading>
       </VStack>
       <Modal open={addPage} setOpen={setAddPage}>
-        <AddPageForm />
+        <AddPageForm setAddPage={setAddPage} />
       </Modal>
       <Modal open={login} setOpen={setLogin}>
         <LoginForm setLogin={setLogin} />

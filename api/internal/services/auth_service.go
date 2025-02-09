@@ -53,6 +53,7 @@ func (s *authService) Login(c *gin.Context, username string, password string) (m
 	expirationTime := time.Now().Add(1 * time.Hour).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
+		"role":     "admin",
 		"exp":      expirationTime,
 	})
 	tokenString, err := token.SignedString([]byte(s.jwtSecret))

@@ -96,6 +96,9 @@ func GetUserDetails(c *gin.Context, authService services.AuthService) {
 		return
 	}
 
+	// Set the role in the context
+	c.Set("role", userDetails["role"])
+
 	// Return user details
 	c.JSON(http.StatusOK, gin.H{
 		"user": userDetails,
@@ -118,9 +121,6 @@ func CreatePage(c *gin.Context, pageService services.PageService) {
 		Path     string `json:"path"`
 		Heading  string `json:"heading"`
 	}
-
-	// Log the request body
-
 	err := c.BindJSON(&request)
 	if err != nil {
 		c.JSON(400, gin.H{"message": "Invalid request"})
@@ -133,7 +133,16 @@ func CreatePage(c *gin.Context, pageService services.PageService) {
 		return
 	}
 
-	c.JSON(200, gin.H{"path": request.Path, "message": "Page created"})
+	// Get pages from the database
+	pages, err := pageService.GetPages(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{"pages": pages})
 }
 
 func MovePage(c *gin.Context, pageService services.PageService) {

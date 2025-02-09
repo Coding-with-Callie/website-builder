@@ -18,16 +18,11 @@ const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
   const { setPages } = usePages();
 
   const handleLoginLogout = async () => {
-    console.log("role", role);
-
     if (role === "admin") {
       const { user, pages } = (await axiosPrivate.post("/logout")).data as {
         user: User;
         pages: PageType[];
       };
-
-      console.log("user", user);
-      console.log("pages", pages);
 
       setUser(user);
       setPages(pages);

@@ -2,10 +2,13 @@ import { useState } from "react";
 import Form from "./Form";
 import { User } from "../types/user";
 import { PageType } from "../types/page";
-import { useUser } from "../hooks/useUser";
 import usePages from "../hooks/usePages";
 
-const LoginForm = () => {
+type Props = {
+  setAddPage: (addPage: boolean) => void;
+};
+
+const AddPageForm = ({ setAddPage }: Props) => {
   const [initialValues, setInitialValues] = useState<{ [key: string]: string }>(
     {
       menu_name: "",
@@ -14,15 +17,13 @@ const LoginForm = () => {
     }
   );
 
-  const { setUser } = useUser();
   const { setPages } = usePages();
 
   const responseAction = (response: {
     data: { user: User; pages: PageType[]; path: string };
   }) => {
-    setUser(response.data.user);
     setPages(response.data.pages);
-    window.location.href = "http://localhost:5173" + response.data.path;
+    setAddPage(false);
   };
 
   return (
@@ -36,4 +37,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default AddPageForm;

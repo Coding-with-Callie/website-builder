@@ -32,7 +32,6 @@ const Form = ({
     axiosPrivate
       .post(route, initialValues)
       .then((response) => {
-        console.log(response);
         responseAction(response);
       })
       .catch((error) => {
