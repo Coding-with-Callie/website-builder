@@ -12,7 +12,11 @@ const DynamicRoutes = ({ role }: Props) => {
   return (
     <Routes>
       {pages.map((page) => (
-        <Route path={page.path} element={<Page page={page} role={role} />} />
+        <Route
+          key={page.path}
+          path={page.path}
+          element={<Page page={page} role={role} />}
+        />
       ))}
     </Routes>
   );

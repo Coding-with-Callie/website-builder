@@ -1,4 +1,4 @@
-import { HStack } from "@chakra-ui/react";
+import { Box, HStack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import sloth from "../assets/sloth.png";
 import { Avatar } from "./ui/avatar";
@@ -29,7 +29,7 @@ const Header = ({ photo, pages }: Props) => {
       <HStack>
         {pages.map((page) => {
           return (
-            <>
+            <Box key={page.path}>
               {page.menu_name && (
                 <Link to={page.path} key={page.path}>
                   <Heading type="nav" mx={2}>
@@ -37,7 +37,7 @@ const Header = ({ photo, pages }: Props) => {
                   </Heading>
                 </Link>
               )}
-            </>
+            </Box>
           );
         })}
         {photo && <Avatar name={"callie"} src={photo} size="xl" ml={4} />}
