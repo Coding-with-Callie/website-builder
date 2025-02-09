@@ -2,6 +2,10 @@ import { Box, VStack } from "@chakra-ui/react";
 import { PageType } from "../types/page";
 import { Heading } from "../style/heading-recipe";
 import AdminButtons from "./AdminButtons";
+import { useState } from "react";
+import Modal from "./Modal";
+import AddPageForm from "./AddPageForm";
+import LoginForm from "./LoginForm";
 
 type Props = {
   page: PageType;
@@ -9,9 +13,17 @@ type Props = {
 };
 
 const Page = ({ page, role }: Props) => {
+  const [addPage, setAddPage] = useState(false);
+  const [login, setLogin] = useState(false);
+
   return (
     <Box flex={1} w="100%">
-      <AdminButtons role={role} />
+      <AdminButtons
+        role={role}
+        setLogin={setLogin}
+        setAddPage={setAddPage}
+        addPage={addPage}
+      />
       <VStack w="90%" m="auto">
         <Heading
           type="page"
@@ -25,6 +37,12 @@ const Page = ({ page, role }: Props) => {
           {page.heading}
         </Heading>
       </VStack>
+      <Modal open={addPage} setOpen={setAddPage}>
+        <AddPageForm />
+      </Modal>
+      <Modal open={login} setOpen={setLogin}>
+        <LoginForm setLogin={setLogin} />
+      </Modal>
     </Box>
   );
 };

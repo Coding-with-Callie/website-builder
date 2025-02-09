@@ -1,17 +1,40 @@
 import { HStack, IconButton } from "@chakra-ui/react";
-import { useState } from "react";
-import { GrEdit, GrAdd, GrLogin } from "react-icons/gr";
-import AddPageForm from "./AddPageForm";
-import LoginForm from "./LoginForm";
-import Modal from "./Modal";
+import { GrEdit, GrAdd, GrLogin, GrLogout } from "react-icons/gr";
+import { axiosPrivate } from "../utils/axios";
+import { useUser } from "../hooks/useUser";
+import { User } from "../types/user";
+import { PageType } from "../types/page";
+import usePages from "../hooks/usePages";
 
 type Props = {
   role: "admin" | "guest";
+  setLogin: (login: boolean) => void;
+  setAddPage: (addPage: boolean) => void;
+  addPage: boolean;
 };
 
-const AdminButtons = ({ role }: Props) => {
-  const [addPage, setAddPage] = useState(false);
-  const [login, setLogin] = useState(false);
+const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
+  const { setUser } = useUser();
+  const { setPages } = usePages();
+
+  const handleLoginLogout = async () => {
+    console.log("role", role);
+
+    if (role === "admin") {
+      const { user, pages } = (await axiosPrivate.post("/logout")).data as {
+        user: User;
+        pages: PageType[];
+      };
+
+      console.log("user", user);
+      console.log("pages", pages);
+
+      setUser(user);
+      setPages(pages);
+    } else {
+      setLogin(true);
+    }
+  };
 
   return (
     <>
@@ -34,19 +57,13 @@ const AdminButtons = ({ role }: Props) => {
         <IconButton
           aria-label="Log in as admin"
           rounded="full"
-          onClick={() => setLogin(!login)}
-          opacity={0}
+          onClick={handleLoginLogout}
+          opacity={role === "admin" ? 1 : 0}
           _hover={{ opacity: 1 }}
         >
-          <GrLogin />
+          {role === "admin" ? <GrLogout /> : <GrLogin />}
         </IconButton>
       </HStack>
-      <Modal open={addPage} setOpen={setAddPage}>
-        <AddPageForm />
-      </Modal>
-      <Modal open={login} setOpen={setLogin}>
-        <LoginForm setLogin={setLogin} />
-      </Modal>
     </>
   );
 };

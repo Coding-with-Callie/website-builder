@@ -17,6 +17,7 @@ type LoginRequestBody struct {
 
 func RegisterAuthHandlers(router *gin.Engine, authService services.AuthService, pageService services.PageService, logger zerolog.Logger) {
 	router.POST("/login", func(c *gin.Context) { Login(c, authService, pageService) })
+	router.POST("/logout", func(c *gin.Context) { Logout(c, authService, pageService) })
 
 	// Protected routes
 	router.GET("/user-details", middleware.AuthMiddleware(logger), func(c *gin.Context) { GetUserDetails(c, authService) })
@@ -57,6 +58,28 @@ func Login(c *gin.Context, authService services.AuthService, pageService service
 	// Return the logged-in user details and pages
 	c.JSON(http.StatusOK, gin.H{
 		"user":  userDetails,
+		"pages": pages,
+	})
+}
+
+func Logout(c *gin.Context, authService services.AuthService, pageService services.PageService) {
+	// Call the auth service to logout
+	authService.Logout(c)
+
+	// Get pages from the database
+	pages, err := pageService.GetPages(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request",
+		})
+		return
+	}
+
+	guest := map[string]interface{}{"role": "guest"}
+
+	// Return the logged-out message
+	c.JSON(http.StatusOK, gin.H{
+		"user":  guest,
 		"pages": pages,
 	})
 }

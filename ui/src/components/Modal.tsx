@@ -15,13 +15,7 @@ const Modal = ({ open, setOpen, children }: Props) => {
   return (
     <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)} size="lg">
       <DialogBackdrop />
-      <DialogContent
-        p={4}
-        bg="white"
-        boxShadow="lg"
-        borderRadius="lg"
-        height="100%"
-      >
+      <DialogContent p={4} bg="white" boxShadow="lg" borderRadius="lg">
         {children}
         <DialogCloseTrigger />
       </DialogContent>

@@ -36,7 +36,12 @@ func NewPageService(db *sql.DB, logger zerolog.Logger) PageService {
 
 func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 	// Get role from context
-	role, _ := c.Get("role")
+	role, ok := c.Get("role")
+	if !ok {
+		role = "guest"
+	}
+
+	s.logger.Info().Str("role", role.(string)).Msg("Getting pages")
 
 	rows, err := s.db.Query("SELECT create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata FROM pages ORDER BY page_order ASC")
 	if err != nil {

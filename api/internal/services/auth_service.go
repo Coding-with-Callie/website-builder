@@ -14,6 +14,7 @@ import (
 
 type AuthService interface {
 	Login(c *gin.Context, username string, password string) (map[string]interface{}, error)
+	Logout(c *gin.Context)
 	GetUserDetails(username string) (map[string]interface{}, error)
 }
 
@@ -116,4 +117,26 @@ func (s *authService) GetUserDetails(username string) (map[string]interface{}, e
 	}
 
 	return userDetails, nil
+}
+
+func (s *authService) Logout(c *gin.Context) {
+	// Delete the JWT cookie
+	cookie := &http.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(c.Writer, cookie)
+
+	// Delete the loggedIn cookie
+	cookieLoggedIn := &http.Cookie{
+		Name:     "loggedIn",
+		Value:    "",
+		Expires:  time.Unix(0, 0),
+		HttpOnly: false,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(c.Writer, cookieLoggedIn)
 }
