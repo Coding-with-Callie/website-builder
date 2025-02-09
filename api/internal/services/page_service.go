@@ -10,7 +10,7 @@ import (
 
 type PageService interface {
 	GetPages(c *gin.Context) ([]Page, error)
-	CreatePage(page Page) error
+	CreatePage(menuName string, path string, heading string) error
 	MovePage(c *gin.Context, id string, direction string) error
 }
 
@@ -92,7 +92,7 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 	return pages, nil
 }
 
-func (s *pageService) CreatePage(page Page) error {
+func (s *pageService) CreatePage(menuName string, path string, heading string) error {
 	// Get the highest page order in the table
 	var maxPageOrder int
 	err := s.db.QueryRow("SELECT MAX(page_order) FROM pages").Scan(&maxPageOrder)
@@ -100,7 +100,9 @@ func (s *pageService) CreatePage(page Page) error {
 		s.logger.Error().Err(err).Msg("Failed to get max page order")
 	}
 
-	_, err = s.db.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), $1, $2, $3, $4, $5, $6, $7, $8)", page.PublishDate, page.ModifyDate, page.MenuName, page.Heading, page.Path, page.CreatorID, page.Metadata, maxPageOrder+1)
+	s.logger.Info().Str("menuName", menuName).Str("path", path).Str("heading", heading).Int("maxPageOrder", maxPageOrder).Msg("Creating page")
+
+	_, err = s.db.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), null, null, $1, $2, $3, 1, null, $4)", menuName, heading, path, maxPageOrder+1)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to create page")
 		return err

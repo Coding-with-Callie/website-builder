@@ -90,20 +90,27 @@ func GetPages(c *gin.Context, pageService services.PageService) {
 }
 
 func CreatePage(c *gin.Context, pageService services.PageService) {
-	var page services.Page
-	err := c.BindJSON(&page)
+	var request struct {
+		MenuName string `json:"menu_name"`
+		Path     string `json:"path"`
+		Heading  string `json:"heading"`
+	}
+
+	// Log the request body
+
+	err := c.BindJSON(&request)
 	if err != nil {
 		c.JSON(400, gin.H{"message": "Invalid request"})
 		return
 	}
 
-	err = pageService.CreatePage(page)
+	err = pageService.CreatePage(request.MenuName, request.Path, request.Heading)
 	if err != nil {
-		c.JSON(500, gin.H{"message": "Failed to create page"})
+		c.JSON(500, gin.H{"path": request.Path, "message": "Failed to create page"})
 		return
 	}
 
-	c.JSON(200, gin.H{"message": "Page created"})
+	c.JSON(200, gin.H{"path": request.Path, "message": "Page created"})
 }
 
 func MovePage(c *gin.Context, pageService services.PageService) {

@@ -1,6 +1,3 @@
-import { useNavigate } from "react-router-dom";
-import usePages from "../hooks/usePages";
-import { useUser } from "../hooks/useUser";
 import { axiosPrivate } from "../utils/axios";
 import { Button, Fieldset, Input } from "@chakra-ui/react";
 import { Heading } from "../style/heading-recipe";
@@ -32,6 +29,7 @@ const Form = ({
     axiosPrivate
       .post(route, initialValues)
       .then((response) => {
+        console.log(response);
         responseAction(response);
       })
       .catch((error) => {
