@@ -16,31 +16,30 @@ const Page = ({ page, role }: Props) => {
   const [addPage, setAddPage] = useState(false);
   const [login, setLogin] = useState(false);
 
-  if (page.path === "/login") {
-    return <LoginForm />;
-  }
-
   return (
     <Box flex={1} w="100%">
       <HStack justifyContent="flex-end" p={4}>
-        {role === "admin" && (
-          <>
-            <IconButton aria-label="Edit Page" rounded="full">
-              <GrEdit />
-            </IconButton>
-            <IconButton
-              aria-label="Add Page"
-              rounded="full"
-              onClick={() => setAddPage(!addPage)}
-            >
-              <GrAdd />
-            </IconButton>
-          </>
-        )}
+        <IconButton
+          aria-label="Edit Page"
+          rounded="full"
+          display={role === "admin" ? "flex" : "none"}
+        >
+          <GrEdit />
+        </IconButton>
+        <IconButton
+          aria-label="Add Page"
+          rounded="full"
+          onClick={() => setAddPage(!addPage)}
+          display={role === "admin" ? "flex" : "none"}
+        >
+          <GrAdd />
+        </IconButton>
         <IconButton
           aria-label="Log in as admin"
           rounded="full"
           onClick={() => setLogin(!login)}
+          opacity={0}
+          _hover={{ opacity: 1 }}
         >
           <GrLogin />
         </IconButton>
@@ -61,7 +60,7 @@ const Page = ({ page, role }: Props) => {
           <AddPageForm />
         </Modal>
         <Modal open={login} setOpen={setLogin}>
-          <LoginForm />
+          <LoginForm setLogin={setLogin} />
         </Modal>
       </VStack>
     </Box>

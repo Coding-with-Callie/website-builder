@@ -2,11 +2,14 @@ import { useState } from "react";
 import Form from "./Form";
 import { User } from "../types/user";
 import { PageType } from "../types/page";
-import { useNavigate } from "react-router-dom";
 import { useUser } from "../hooks/useUser";
 import usePages from "../hooks/usePages";
 
-const LoginForm = () => {
+type Props = {
+  setLogin: (login: boolean) => void;
+};
+
+const LoginForm = ({ setLogin }: Props) => {
   const [initialValues, setInitialValues] = useState<{ [key: string]: string }>(
     {
       username: "",
@@ -14,14 +17,14 @@ const LoginForm = () => {
     }
   );
 
-  const navigate = useNavigate();
   const { setUser } = useUser();
   const { setPages } = usePages();
 
   const responseAction = (response: {
     data: { user: User; pages: PageType[] };
   }) => {
-    navigate("/");
+    // Close the modal with the form
+    setLogin(false);
     setUser(response.data.user);
     setPages(response.data.pages);
   };
