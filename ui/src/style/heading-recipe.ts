@@ -13,7 +13,7 @@ export const headingRecipe = defineRecipe({
         fontFamily: "Pacifico",
       },
       page: {
-        fontSize: "24px",
+        fontSize: "20px",
       },
       footer: {
         fontSize: "18px",

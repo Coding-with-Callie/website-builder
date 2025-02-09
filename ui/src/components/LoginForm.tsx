@@ -32,6 +32,7 @@ const LoginForm = () => {
       setInitialValues={setInitialValues}
       route={"/login"}
       responseAction={responseAction}
+      heading="Login"
     />
   );
 };

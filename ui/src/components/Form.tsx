@@ -8,6 +8,7 @@ type Props = {
   route: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   responseAction: (response: any) => void;
+  heading: string;
 };
 
 const Form = ({
@@ -15,6 +16,7 @@ const Form = ({
   setInitialValues,
   route,
   responseAction,
+  heading,
 }: Props) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInitialValues({
@@ -37,19 +39,18 @@ const Form = ({
       });
   };
 
+  const formatPlaceholder = (key: string): string => {
+    key = key.replace("_", " ");
+    key = key.charAt(0).toUpperCase() + key.slice(1);
+
+    return key;
+  };
+
   return (
-    <form
-      style={{
-        width: "70%",
-        background: "white",
-        padding: "20px",
-        borderRadius: "5px",
-      }}
-      onSubmit={handleSubmit}
-    >
+    <form onSubmit={handleSubmit}>
       <Fieldset.Root>
         <Fieldset.Legend>
-          <Heading type="nav">Login</Heading>
+          <Heading type="page">{heading}</Heading>
         </Fieldset.Legend>
         <Fieldset.Content>
           {Object.keys(initialValues).map((key) => {
@@ -58,7 +59,7 @@ const Form = ({
                 key={key}
                 name={key}
                 onChange={handleChange}
-                placeholder={key}
+                placeholder={formatPlaceholder(key)}
                 type={key === "password" ? "password" : "text"}
               />
             );

@@ -20,8 +20,6 @@ const LoginForm = () => {
   const responseAction = (response: {
     data: { user: User; pages: PageType[]; path: string };
   }) => {
-    console.log(response.data.path);
-
     setUser(response.data.user);
     setPages(response.data.pages);
     window.location.href = "http://localhost:5173" + response.data.path;
@@ -33,6 +31,7 @@ const LoginForm = () => {
       setInitialValues={setInitialValues}
       route={"/pages"}
       responseAction={responseAction}
+      heading="Add Page"
     />
   );
 };
