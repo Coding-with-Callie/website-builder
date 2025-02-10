@@ -1,10 +1,11 @@
 import { HStack, IconButton } from "@chakra-ui/react";
 import { GrEdit, GrAdd, GrLogin, GrLogout } from "react-icons/gr";
-import { axiosPrivate } from "../utils/axios";
+import { axiosCustom } from "../utils/axios";
 import { useUser } from "../hooks/useUser";
 import { User } from "../types/user";
 import { PageType } from "../types/page";
 import usePages from "../hooks/usePages";
+import { button } from "../style/theme";
 
 type Props = {
   role: "admin" | "guest";
@@ -19,7 +20,7 @@ const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
 
   const handleLoginLogout = async () => {
     if (role === "admin") {
-      const { user, pages } = (await axiosPrivate.post("/logout")).data as {
+      const { user, pages } = (await axiosCustom.post("/logout")).data as {
         user: User;
         pages: PageType[];
       };

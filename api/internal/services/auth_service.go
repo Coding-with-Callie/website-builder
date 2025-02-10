@@ -72,7 +72,7 @@ func (s *authService) Login(c *gin.Context, username string, password string) (m
 		HttpOnly: true,
 	}
 
-	// Create a non-HTTP only cookie to indicate the user is logged in
+	// Create a regular cookie to indicate the user is logged in
 	cookieLoggedIn := &http.Cookie{
 		Name:     "loggedIn",
 		Value:    "true",

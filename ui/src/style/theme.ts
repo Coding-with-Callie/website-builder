@@ -1,5 +1,5 @@
 import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
-import { buttonRecipe } from "./button-recipe";
+import { buttonRecipe, iconButtonRecipe } from "./button-recipe";
 import { inputRecipe } from "./input-recipe";
 
 export const heading = "#3e7aa6";
@@ -65,6 +65,7 @@ const config = defineConfig({
     recipes: {
       button: buttonRecipe,
       input: inputRecipe,
+      iconButton: iconButtonRecipe,
     },
   },
 });

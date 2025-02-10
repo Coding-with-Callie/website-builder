@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { axiosPrivate } from "../utils/axios";
+import { axiosCustom } from "../utils/axios";
 import { UserContextType } from "../contexts/UserContext";
 import { useUserContext } from "./useUserContext";
 
@@ -16,7 +16,7 @@ export const useUser = () => {
 
     // Call the API to fetch user details
     // The API will return the real user or the guest user depending on the vality of the JWT cookie
-    axiosPrivate
+    axiosCustom
       .get("/user-details")
       .then((response) => {
         setUser(response.data.user);

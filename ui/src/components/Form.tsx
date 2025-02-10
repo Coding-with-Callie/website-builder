@@ -1,7 +1,6 @@
-import { axiosPrivate } from "../utils/axios";
+import { axiosCustom } from "../utils/axios";
 import { Button, Fieldset, Input } from "@chakra-ui/react";
 import { Heading } from "../style/heading-recipe";
-import { button } from "../style/theme";
 
 type Props = {
   initialValues: { [key: string]: string };
@@ -29,7 +28,7 @@ const Form = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    axiosPrivate
+    axiosCustom
       .post(route, initialValues)
       .then((response) => {
         responseAction(response);
@@ -61,7 +60,6 @@ const Form = ({
                 onChange={handleChange}
                 placeholder={formatPlaceholder(key)}
                 type={key === "password" ? "password" : "text"}
-                css={{ "--focus-ring-color": button }}
               />
             );
           })}
