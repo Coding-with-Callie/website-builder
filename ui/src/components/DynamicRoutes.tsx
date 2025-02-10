@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { usePagesContext } from "../hooks/usePageContext";
 import Page from "./Page";
+import React from "react";
 
 type Props = {
   role: "admin" | "guest";
@@ -12,11 +13,13 @@ const DynamicRoutes = ({ role }: Props) => {
   return (
     <Routes>
       {pages.map((page) => (
-        <Route
-          key={page.path}
-          path={page.path}
-          element={<Page page={page} role={role} />}
-        />
+        <React.Fragment key={page.path}>
+          <Route path={page.path} element={<Page page={page} role={role} />} />
+          <Route
+            path={`${page.path}/edit`}
+            element={<div>EDIT PAGE HERE</div>}
+          />
+        </React.Fragment>
       ))}
     </Routes>
   );

@@ -5,7 +5,7 @@ import { useUser } from "../hooks/useUser";
 import { User } from "../types/user";
 import { PageType } from "../types/page";
 import usePages from "../hooks/usePages";
-import { button } from "../style/theme";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   role: "admin" | "guest";
@@ -17,6 +17,12 @@ type Props = {
 const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
   const { setUser } = useUser();
   const { setPages } = usePages();
+  const navigate = useNavigate();
+
+  const openEditPage = () => {
+    const currentPage = window.location.pathname;
+    navigate(currentPage + "/edit");
+  };
 
   const handleLoginLogout = async () => {
     if (role === "admin") {
@@ -39,6 +45,7 @@ const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
           aria-label="Edit Page"
           rounded="full"
           display={role === "admin" ? "flex" : "none"}
+          onClick={openEditPage}
         >
           <GrEdit />
         </IconButton>
