@@ -70,7 +70,6 @@ func (s *authService) Login(c *gin.Context, username string, password string) (m
 		Value:    tokenString,
 		Expires:  time.Unix(expirationTime, 0),
 		HttpOnly: true,
-		SameSite: http.SameSiteLaxMode,
 	}
 
 	// Create a non-HTTP only cookie to indicate the user is logged in
@@ -79,7 +78,6 @@ func (s *authService) Login(c *gin.Context, username string, password string) (m
 		Value:    "true",
 		Expires:  time.Unix(expirationTime, 0),
 		HttpOnly: false,
-		SameSite: http.SameSiteLaxMode,
 	}
 
 	// Set the cookies in the response
@@ -90,11 +88,13 @@ func (s *authService) Login(c *gin.Context, username string, password string) (m
 	c.Set("username", username)
 	c.Set("role", "admin")
 
+	// Get the user details
 	userDetails, err := s.GetUserDetails(username)
 	if err != nil {
 		return nil, err
 	}
 
+	// Return the user details
 	return userDetails, nil
 }
 
