@@ -10,14 +10,14 @@ function App() {
     <div>
       <h1>Rich Text Editor Comparison</h1>
 
-      <div>
+      {/* <div>
         <TipTapEditor />
-      </div>
+      </div> */}
       
-      <div>
+      {/* <div>
         <h2>Quill Editor</h2>
         <QuillEditor />
-      </div>
+      </div> */}
 
       <div>
         <h2>Lexical Editor</h2>
