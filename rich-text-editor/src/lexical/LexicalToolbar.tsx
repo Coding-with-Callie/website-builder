@@ -1,7 +1,12 @@
-import { FORMAT_TEXT_COMMAND, FORMAT_ELEMENT_COMMAND } from "lexical"; // FORMAT_TEXT contains commands for text-level formatting like bold, italic, underline, etc., and FORMAT_ELEMENT contains commands for element-level formatting like bullet list, code block, link, etc.
+import { FORMAT_TEXT_COMMAND, FORMAT_ELEMENT_COMMAND, $createParagraphNode } from "lexical"; // FORMAT_TEXT contains commands for text-level formatting like bold, italic, underline, etc., and FORMAT_ELEMENT contains commands for element-level formatting like bullet list, code block, link, etc.
+import { TOGGLE_LINK_COMMAND } from "@lexical/link";
+import { $isListNode, INSERT_UNORDERED_LIST_COMMAND } from '@lexical/list';
+import { registerCodeHighlighting, $createCodeNode, $isCodeNode } from "@lexical/code"; // functions to create a code block
 import { $getSelection, $isRangeSelection } from 'lexical'; // function to retreive current selection within editor, a function that checks if the current selection is a range (boolean), and a class (LexicalEditor) that represents the editor instance itself for type safety if needed
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'; // a hook that provides access to the Lexical editor context and give you the editor instance-it returns an array with the first element being the editor instance
 import {TextFormatType, BlockFormatType } from './FormatTypes';
+import { $setBlocksType } from '@lexical/selection';
+
 
 
 const LexicalToolbar = () => {
@@ -17,7 +22,59 @@ const LexicalToolbar = () => {
       })
     }
 
+    const applyBlockFormat = (formatType: BlockFormatType) => {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          // const anchorNode = selection.anchor.getNode();
+          const parent = selection.anchor.getNode().getParent();
 
+          switch (formatType) {
+            case 'bullet':
+              if (parent && $isListNode(parent)) {
+                // if it's already a list, convert to a paragraph
+                $setBlocksType(selection, () => $createParagraphNode());
+              } else {
+                // otherwise apply list formatting
+                editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+              }
+              
+              break;
+            case 'code':
+              if (parent && $isListNode(parent)) {
+                // toggle code block off -> convert to a paragraph
+                $setBlocksType(selection, () => $createParagraphNode());
+              } else {
+                $setBlocksType(selection, () => $createCodeNode())
+              }
+              
+              break;
+            case 'link':
+              let url = prompt('Enter Url');
+              
+              if (url) {
+                //ensure the URL starts with http:// or https://
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                  url = 'https://' + url;
+                }
+                console.log('Inserting link', url);
+                editor.dispatchCommand(TOGGLE_LINK_COMMAND, url)
+              }  
+              break;  
+          }
+        }
+      })
+    }
+
+    // if (selection.getNodes().some(node => $isCodeNode(node))) {
+    //   selection.getNodes().forEach(node => {
+    //     if ($isCodeNode(node)) {
+    //       node.remove();
+    //     }
+    //   })
+    // } else {
+    //     $setBlocksType(selection, () => $createCodeNode())
+    // }
 
 
   return (
@@ -25,8 +82,15 @@ const LexicalToolbar = () => {
         <button onClick={() => {applyTextFormat('bold')}}>B</button>
         <button onClick={() => {applyTextFormat('italic')}}><i>I</i></button>
         <button onClick={() => {applyTextFormat('underline')}}><u>U</u></button>
+        <button onClick={() => {applyBlockFormat('bullet')}}>List</button>
+        <button onClick={() => {applyBlockFormat('code')}}>{'</>'}</button>
+        <button onClick={() => {applyBlockFormat('link')}}>Link</button>
     </div>
   )
 }
 
 export default LexicalToolbar
+
+// function $wrapSelectionElement(selection: RangeSelection) {
+//   throw new Error("Function not implemented.");
+// }

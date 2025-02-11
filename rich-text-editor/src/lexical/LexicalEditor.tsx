@@ -7,9 +7,13 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'; //add undo/
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary'; // prevents crashes due to editor errors
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin'; // Ensures editor focuses on mount
 import LexicalToolbar from './LexicalToolbar';
+import ClickLinkPlugin from './ClickLinkPlugin';
 
-import { ListNode, ListItemNode} from '@lexical/list';
-import { LinkNode } from '@lexical/link';
+// import required nodes
+import { ListNode, ListItemNode} from '@lexical/list'; // nodes for bullet lists
+import { LinkNode } from '@lexical/link'; // nodes for links
+import { CodeNode, CodeHighlightNode } from '@lexical/code'; // nodes for code blocks
+
 
 
 const theme = {
@@ -20,7 +24,7 @@ const theme = {
 const initialConfig = {
     namespace: 'MyLexicalEditor', //used to uniquely identify this editor instance
     theme,
-    nodes: [ListNode, ListItemNode, LinkNode], 
+    nodes: [ListNode, ListItemNode, LinkNode, CodeNode, CodeHighlightNode], // register nodes for lists, links, and code blocks
     onError: (error: Error) => console.error('Lexical error:',  error) // handle errors in editor
 };
 
@@ -36,6 +40,7 @@ const LexicalEditor = () => {
         <ListPlugin />
         <LinkPlugin />
         <AutoFocusPlugin />
+        <ClickLinkPlugin />
     </LexicalComposer>
   )
 }
