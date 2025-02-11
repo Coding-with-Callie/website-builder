@@ -32,9 +32,7 @@ const Header = ({ photo, pages }: Props) => {
             <Box key={page.path}>
               {page.menu_name && (
                 <Link to={page.path} key={page.path}>
-                  <Heading type="nav" mx={2}>
-                    {page.menu_name}
-                  </Heading>
+                  <Heading mx={2}>{page.menu_name}</Heading>
                 </Link>
               )}
             </Box>

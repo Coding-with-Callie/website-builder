@@ -5,7 +5,7 @@ import SocialMediaButton from "./SocialMediaButton";
 const Footer = () => {
   return (
     <HStack w="100%" p={4} boxShadow="lg" bg="white" justifyContent="center">
-      <Heading type="footer">Contact Callie:</Heading>
+      <Heading>Contact Callie:</Heading>
       {["linkedin", "youtube", "github", "mail"].map((type) => (
         <SocialMediaButton key={type} type={type} />
       ))}

@@ -21,6 +21,12 @@ const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
 
   const openEditPage = () => {
     const currentPage = window.location.pathname;
+
+    if (currentPage === "/") {
+      navigate("/home/edit");
+      return;
+    }
+
     navigate(currentPage + "/edit");
   };
 
@@ -39,35 +45,33 @@ const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
   };
 
   return (
-    <>
-      <HStack justifyContent="flex-end" p={4}>
-        <IconButton
-          aria-label="Edit Page"
-          rounded="full"
-          display={role === "admin" ? "flex" : "none"}
-          onClick={openEditPage}
-        >
-          <GrEdit />
-        </IconButton>
-        <IconButton
-          aria-label="Add Page"
-          rounded="full"
-          onClick={() => setAddPage(!addPage)}
-          display={role === "admin" ? "flex" : "none"}
-        >
-          <GrAdd />
-        </IconButton>
-        <IconButton
-          aria-label="Log in as admin"
-          rounded="full"
-          onClick={handleLoginLogout}
-          opacity={role === "admin" ? 1 : 0}
-          _hover={{ opacity: 1 }}
-        >
-          {role === "admin" ? <GrLogout /> : <GrLogin />}
-        </IconButton>
-      </HStack>
-    </>
+    <HStack justifyContent="flex-end" p={4}>
+      <IconButton
+        aria-label="Edit Page"
+        rounded="full"
+        display={role === "admin" ? "flex" : "none"}
+        onClick={openEditPage}
+      >
+        <GrEdit />
+      </IconButton>
+      <IconButton
+        aria-label="Add Page"
+        rounded="full"
+        onClick={() => setAddPage(!addPage)}
+        display={role === "admin" ? "flex" : "none"}
+      >
+        <GrAdd />
+      </IconButton>
+      <IconButton
+        aria-label="Log in as admin"
+        rounded="full"
+        onClick={handleLoginLogout}
+        opacity={role === "admin" ? 1 : 0}
+        _hover={{ opacity: 1 }}
+      >
+        {role === "admin" ? <GrLogout /> : <GrLogin />}
+      </IconButton>
+    </HStack>
   );
 };
 
