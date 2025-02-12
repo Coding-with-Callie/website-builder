@@ -21,6 +21,7 @@ const Modal = ({ open, setOpen, children }: Props) => {
         boxShadow="lg"
         borderRadius="lg"
         position="fixed"
+        top="5%"
       >
         {children}
         <DialogCloseTrigger />

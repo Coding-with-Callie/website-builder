@@ -73,7 +73,10 @@ func CreateTables(logger zerolog.Logger) {
 }
 
 func Seed(logger zerolog.Logger) {
-	// Get the admin info from the config
+	// Load configuration
+	config.LoadConfig()
+
+	// Get the admin password from the environment variable
 	password := config.AppConfig.AdminPassword
 
 	// Hash the admin password before storing it in the database
@@ -83,20 +86,32 @@ func Seed(logger zerolog.Logger) {
 	}
 
 	// Create an admin user if it doesn't exist
-	_, err = DB.Exec("INSERT INTO users (first_name, last_name, email, username, password, role, photo) VALUES ('Callie', 'Stoscup', 'calliestoscup@gmail.com', 'calliestoscup', $1, 'admin', 'https://coding-with-callie.s3.us-east-1.amazonaws.com/callie.png') ON CONFLICT (username, email) DO NOTHING", hashedPassword)
+	_, err = DB.Exec(
+		"INSERT INTO users (first_name, last_name, email, username, password, role, photo) "+
+			"VALUES ($1, $2, $3, $4, $5, $6, $7) "+
+			"ON CONFLICT (username, email) DO NOTHING",
+		"Callie", "Stoscup", "calliestoscup@gmail.com", "calliestoscup",
+		hashedPassword, "admin", "https://coding-with-callie.s3.us-east-1.amazonaws.com/callie.png",
+	)
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create test user")
 	}
 
 	// Create a home page if it doesn't exist
 	// Will need to edit this once we have multiple users
-	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), NOW(), null, 'Home', 'Home Page', '/', 1, null, 1) ON CONFLICT (menu_name, path) DO NOTHING")
+	_, err = DB.Exec(
+		"INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) " +
+			"VALUES (NOW(), NOW(), null, 'Home', 'Home Page', '/', 1, null, 1) " +
+			"ON CONFLICT (menu_name, path) DO NOTHING")
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create home page")
 	}
 
 	// Create a wildcard page if it doesn't exist
-	_, err = DB.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), NOW(), null, '', 'Page Not Found', '/*', 1, null, 3) ON CONFLICT (menu_name, path) DO NOTHING")
+	_, err = DB.Exec(
+		"INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) " +
+			"VALUES (NOW(), NOW(), null, '', 'Page Not Found', '/*', 1, null, 3) " +
+			"ON CONFLICT (menu_name, path) DO NOTHING")
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create wildcard page")
 	}

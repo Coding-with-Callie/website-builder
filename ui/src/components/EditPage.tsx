@@ -7,19 +7,19 @@ type Props = {
 };
 
 const EditPage = ({ page }: Props) => {
-  console.log(page);
-
   return (
-    <VStack
-      w="90%"
-      m="auto"
-      background="white"
-      boxShadow="lg"
-      borderRadius="lg"
-      p={4}
-      flex={1}
-    >
-      <Heading>{page.menu_name} Page Details</Heading>
+    <VStack w="90%" m="auto" flex={1}>
+      <Heading
+        type="page"
+        p={4}
+        bg="white"
+        boxShadow="lg"
+        borderRadius="lg"
+        w="100%"
+        textAlign="center"
+      >
+        {`Edit ${page.menu_name} Page Details`}
+      </Heading>
     </VStack>
   );
 };
