@@ -45,7 +45,7 @@ const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
   };
 
   return (
-    <HStack justifyContent="flex-end" p={4}>
+    <HStack justifyContent="flex-end" p={4} w="100%">
       <IconButton
         aria-label="Edit Page"
         rounded="full"
