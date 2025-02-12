@@ -26,13 +26,27 @@ const QuillEditor = () => {
                 },
                 debug: true, // set the debug level 
             }); 
-        }
+        };
+
+        // clean up function for quill toolbar since it is attached to the DOM, which is causing it to persist when switching between editors on main app.tsx page. 
+        return () => {
+            if (quillRef.current) {
+                quillRef.current.root.innerHTML = ''; // clear content
+                document.querySelector('.ql-toolbar')?.remove(); //remove the toolbar
+                quillRef.current = null; //reset quill instance + prevent memory leaks
+            }
+        };
 
 
     }, [])
 
   return (
-    <div ref={editorRef} style={{ height: '300px' }}/> // Editor container
+    <div>
+        <h2>Quill Editor</h2>
+        {/* editor container */}
+         <div ref={editorRef} style={{ height: '300px' }}/> 
+    </div>
+   
   )
 }
 
