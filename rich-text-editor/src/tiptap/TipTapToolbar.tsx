@@ -1,5 +1,6 @@
 import { Editor } from "@tiptap/react";
 import LinkInputField from "./LinkInputField";
+import './styles.css';
 
 // ensures that the Toolbar component gets an Editor instance, or safely handles a null value to prevent TS errors
 interface ToolbarProps {
@@ -18,14 +19,34 @@ const removeLink = () => {
 };
 
   return (
-    <div>
-        <button onClick={() => editor.chain().focus().toggleBold().run()} disabled={!editor.can().chain().focus().toggleBold().run()}>Bold</button>
-        <button onClick={() => editor.chain().focus().toggleItalic().run()} disabled={!editor.can().chain().focus().toggleItalic().run()}>Italic</button>
-        <button onClick={() => editor.chain().focus().toggleUnderline().run()} disabled={!editor.can().chain().focus().toggleUnderline().run()}>Underline</button>
-        <button onClick={() => editor.chain().focus().toggleBulletList().run()} disabled={!editor.can().chain().focus().toggleBulletList().run()}>Bullet List</button>
-        <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} disabled={!editor.can().chain().focus().toggleCodeBlock().run()}>Code Block</button>
+    <div className='toolbar'>
+        <button 
+        className={editor.isActive('bold') ? 'active' : ''}
+        onClick={() => editor.chain().focus().toggleBold().run()} disabled={!editor.can().chain().focus().toggleBold().run()}>
+            B
+        </button>
+        <button 
+        className={editor.isActive('italic') ? 'active' : ''}
+        onClick={() => editor.chain().focus().toggleItalic().run()} disabled={!editor.can().chain().focus().toggleItalic().run()}>
+            <i>I</i>
+        </button>
+        <button
+        className={editor.isActive('underline') ? 'active' : ''} 
+        onClick={() => editor.chain().focus().toggleUnderline().run()} disabled={!editor.can().chain().focus().toggleUnderline().run()}>
+            <u>U</u>
+        </button>
+        <button
+        className={editor.isActive('bulletList') ? 'active' : ''} 
+        onClick={() => editor.chain().focus().toggleBulletList().run()} disabled={!editor.can().chain().focus().toggleBulletList().run()}>
+            •
+        </button>
+        <button
+        className={editor.isActive('codeBlock') ? 'active' : ''} 
+        onClick={() => editor.chain().focus().toggleCodeBlock().run()} disabled={!editor.can().chain().focus().toggleCodeBlock().run()}>
+            {'</>'}
+        </button>
         <LinkInputField editor={editor}/>
-        <button onClick={removeLink} disabled={!editor.isActive('link')}>Remove Link</button>
+        <button onClick={removeLink} disabled={!editor.isActive('link')}>Unlink 🔗</button>
     </div>
   )
 }

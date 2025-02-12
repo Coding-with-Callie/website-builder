@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TipTapToolbar from "./TipTapToolbar";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
+import './styles.css';
 
 //tiptap extensions like nodes and marks. The starter kit contains the majority of the node and mark extensions, but you will need to manually add some like Underline and Link.
 const extensions = [
@@ -16,13 +17,13 @@ const extensions = [
     })
 ];
 
-//this is the content that will be styled using the editor
+
 // const content =  <p>Hi, Again</p>'
 
 const TipTapEditor = () => {
     const editor = useEditor({
         extensions,
-        content: '<p>Hello, this is TipTap!</p>'
+        content: '<p></p>' //this is the content that will be styled using the editor; currently it is hardcoded
     });
 
     const [content, setContent] = useState("");
@@ -35,43 +36,30 @@ const TipTapEditor = () => {
         }
     }, [editor]);
 
-    //handle formm submission
-    const handleFormSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    // code for form submission if desired; currently it is not being used
+    // const handleFormSubmit = (e: React.FormEvent) => {
+    //     e.preventDefault();
 
-        if (editor) {
-            setContent(editor.getHTML()); //save the content
-            console.log("SUBMITTED CONTENT:", editor.getHTML());
-        }
+    //     if (editor) {
+    //         setContent(editor.getHTML()); //save the content
+    //         console.log("SUBMITTED CONTENT:", editor.getHTML());
+    //     }
         
-    }
+    // }
 
     // Prevent rendering before initialization
     if (!editor) {
         return <p>Loading editor...</p>; 
     }
-  return (
-    <>
-        <form onSubmit={handleFormSubmit}>
-            <h2>TipTap Editor</h2>
-            <TipTapToolbar editor={editor}/>
-            <EditorContent editor={editor}/>
-            <button type='submit'>Submit</button>
-
-            {/* Displaying stored content for verification */}
-            {/* {content && (
-                <div>
-                    <h3>Preview: </h3>
-                    <div dangerouslySetInnerHTML={{__html: content}}></div>
-                </div>
-            )} */}
-
-        </form>
+  return (  
         <div>
-            
+            <h2>TipTap Editor</h2>
+            <div className='editor-container'>
+                <TipTapToolbar editor={editor}/>
+                <EditorContent editor={editor} className='editor-box'/>
+            </div>
         </div>
-    
-    </>
+        
   )
 }
 

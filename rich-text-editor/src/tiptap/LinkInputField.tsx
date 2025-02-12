@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+//created custom input field for link since once is not provided by TipTap. Alternative is to use a modal.
+import React, {useEffect, useState} from 'react';
 import { Editor } from "@tiptap/react";
 
 interface LinkInputFieldProps {
@@ -36,10 +37,25 @@ const LinkInputField: React.FC<LinkInputFieldProps> = ({ editor }) => {
         //clear input and hide the field
         setUrlInput(""); //clear input field    
         setIsInputVisible(false);
-    }
+    };
+
+    // hide the link input field when any editor change occurs
+    useEffect(() => {
+        if (!editor) return;
+
+        //Hide input field when user clicks away
+        const handleHideInputField = () => setIsInputVisible(false);
+
+        editor.on('transaction', handleHideInputField);
+
+        // cleanup: remove event listener when component unmounts
+        return () => {
+            editor.off('transaction', handleHideInputField);
+        }
+    }, [editor])
   return (
     <div>
-        <button onClick={handleAddLinkClick} disabled={!editor}>Add Link</button>
+        <button onClick={handleAddLinkClick} disabled={!editor}>Link 🔗</button>
 
         {isInputVisible && (
             <input 
@@ -48,6 +64,7 @@ const LinkInputField: React.FC<LinkInputFieldProps> = ({ editor }) => {
             onChange={(e) => setUrlInput(e.target.value)}
             placeholder='Enter link + Press Enter'
             onKeyDown={(e) => e.key === "Enter" && setLink()} //allow pressing enter to set link
+            onBlur={() => setIsInputVisible(false)} //hide input when clicking away
             autoFocus
         />
         )}
