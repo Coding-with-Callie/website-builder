@@ -9,9 +9,10 @@ type Props = {
   photo?: string;
   pages: PageType[];
   role: "admin" | "guest";
+  setEditPage: (editPage: boolean) => void;
 };
 
-const Header = ({ photo, pages }: Props) => {
+const Header = ({ photo, pages, setEditPage }: Props) => {
   return (
     <HStack
       w="100%"
@@ -20,7 +21,7 @@ const Header = ({ photo, pages }: Props) => {
       boxShadow="lg"
       bg="white"
     >
-      <Link to="/">
+      <Link to="/" onClick={() => setEditPage(false)}>
         <HStack>
           <Avatar name={"logo"} src={sloth} size="xl" />
           <Heading type="header">Coding with Callie</Heading>
@@ -31,7 +32,11 @@ const Header = ({ photo, pages }: Props) => {
           return (
             <Box key={page.path}>
               {page.menu_name && (
-                <Link to={page.path} key={page.path}>
+                <Link
+                  to={page.path}
+                  key={page.path}
+                  onClick={() => setEditPage(false)}
+                >
                   <Heading mx={2}>{page.menu_name}</Heading>
                 </Link>
               )}

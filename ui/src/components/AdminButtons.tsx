@@ -1,5 +1,11 @@
 import { HStack, IconButton } from "@chakra-ui/react";
-import { GrEdit, GrAdd, GrLogin, GrLogout } from "react-icons/gr";
+import {
+  GrEdit,
+  GrAdd,
+  GrLogin,
+  GrLogout,
+  GrLinkPrevious,
+} from "react-icons/gr";
 import { axiosCustom } from "../utils/axios";
 import { useUser } from "../hooks/useUser";
 import { User } from "../types/user";
@@ -12,15 +18,35 @@ type Props = {
   setLogin: (login: boolean) => void;
   setAddPage: (addPage: boolean) => void;
   addPage: boolean;
+  setEditPage: (editPage: boolean) => void;
+  editPage: boolean;
 };
 
-const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
+const AdminButtons = ({
+  role,
+  setLogin,
+  setAddPage,
+  addPage,
+  setEditPage,
+  editPage,
+}: Props) => {
   const { setUser } = useUser();
   const { setPages } = usePages();
   const navigate = useNavigate();
 
   const openEditPage = () => {
+    setEditPage(!editPage);
     const currentPage = window.location.pathname;
+
+    if (editPage) {
+      if (currentPage === "/home/edit") {
+        navigate("/");
+        return;
+      }
+
+      navigate(currentPage.replace("/edit", ""));
+      return;
+    }
 
     if (currentPage === "/") {
       navigate("/home/edit");
@@ -52,7 +78,7 @@ const AdminButtons = ({ role, setLogin, setAddPage, addPage }: Props) => {
         display={role === "admin" ? "flex" : "none"}
         onClick={openEditPage}
       >
-        <GrEdit />
+        {editPage ? <GrLinkPrevious /> : <GrEdit />}
       </IconButton>
       <IconButton
         aria-label="Add Page"

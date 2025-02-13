@@ -15,14 +15,17 @@ type PageService interface {
 }
 
 type Page struct {
-	CreateDate  time.Time               `json:"create_date"`
-	PublishDate *time.Time              `json:"publish_date"`
-	ModifyDate  *time.Time              `json:"modify_date"`
-	MenuName    *string                 `json:"menu_name"`
-	Heading     *string                 `json:"heading"`
-	Path        string                  `json:"path"`
-	CreatorID   int                     `json:"creator_id"`
-	Metadata    *map[string]interface{} `json:"metadata"`
+	CreateDate    time.Time               `json:"create_date"`
+	PublishDate   *time.Time              `json:"publish_date"`
+	ModifyDate    *time.Time              `json:"modify_date"`
+	MenuName      *string                 `json:"menu_name"`
+	DraftMenuName *string                 `json:"draft_menu_name"`
+	Heading       *string                 `json:"heading"`
+	DraftHeading  *string                 `json:"draft_heading"`
+	Path          string                  `json:"path"`
+	DraftPath     *string                 `json:"draft_path"`
+	CreatorID     int                     `json:"creator_id"`
+	Metadata      *map[string]interface{} `json:"metadata"`
 }
 
 type pageService struct {
@@ -43,7 +46,7 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 
 	s.logger.Info().Str("role", role.(string)).Msg("Getting pages")
 
-	rows, err := s.db.Query("SELECT create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata FROM pages ORDER BY page_order ASC")
+	rows, err := s.db.Query("SELECT create_date, publish_date, modify_date, menu_name, draft_menu_name, heading, draft_heading, path, draft_path, creator_id, metadata FROM pages ORDER BY page_order ASC")
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to get pages")
 		return nil, err
@@ -55,10 +58,10 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 		var createDate time.Time
 		var publishDate, modifyDate *time.Time
 		var path string
-		var menuName, heading *string
+		var draftPath, menuName, heading, draftMenuName, draftHeading *string
 		var creatorID int
 		var metadata *map[string]interface{}
-		err = rows.Scan(&createDate, &publishDate, &modifyDate, &menuName, &heading, &path, &creatorID, &metadata)
+		err = rows.Scan(&createDate, &publishDate, &modifyDate, &menuName, &draftMenuName, &heading, &draftHeading, &path, &draftPath, &creatorID, &metadata)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to scan row")
 			return nil, err
@@ -79,14 +82,17 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 		}
 
 		page := Page{
-			CreateDate:  createDate,
-			PublishDate: publishDate,
-			ModifyDate:  modifyDate,
-			MenuName:    menuName,
-			Heading:     heading,
-			Path:        path,
-			CreatorID:   creatorID,
-			Metadata:    metadata,
+			CreateDate:    createDate,
+			PublishDate:   publishDate,
+			ModifyDate:    modifyDate,
+			MenuName:      menuName,
+			DraftMenuName: draftMenuName,
+			Heading:       heading,
+			DraftHeading:  draftHeading,
+			Path:          path,
+			DraftPath:     draftPath,
+			CreatorID:     creatorID,
+			Metadata:      metadata,
 		}
 
 		if show {

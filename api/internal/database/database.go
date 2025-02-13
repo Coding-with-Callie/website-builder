@@ -66,7 +66,7 @@ func CreateTables(logger zerolog.Logger) {
 	}
 
 	// Create a pages table if it doesn't exist
-	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS pages (id SERIAL PRIMARY KEY, create_date TIMESTAMP, publish_date TIMESTAMP, modify_date TIMESTAMP, menu_name VARCHAR(50), heading VARCHAR(255), path VARCHAR(50), creator_id INT, metadata JSONB, page_order INT, FOREIGN KEY (creator_id) REFERENCES users(id), UNIQUE(menu_name, path))")
+	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS pages (id SERIAL PRIMARY KEY, create_date TIMESTAMP, publish_date TIMESTAMP, modify_date TIMESTAMP, menu_name VARCHAR(50), draft_menu_name VARCHAR(50), heading VARCHAR(255), draft_heading VARCHAR(255), path VARCHAR(50), draft_path VARCHAR(50),creator_id INT, metadata JSONB, page_order INT, FOREIGN KEY (creator_id) REFERENCES users(id), UNIQUE(menu_name), UNIQUE(path), UNIQUE(draft_menu_name), UNIQUE(draft_path))")
 	if err != nil {
 		logger.Fatal().Err(err).Msg("Failed to create pages table")
 	}
@@ -96,14 +96,24 @@ func Seed(logger zerolog.Logger) {
 		hashedPassword, "admin", "https://coding-with-callie.s3.us-east-1.amazonaws.com/callie.png",
 	).Scan(&userID)
 	if err != nil {
-		logger.Error().Err(err).Msg("Failed to create test user")
+		if err.Error() == "sql: no rows in result set" {
+			logger.Info().Msg("Admin user already exists")
+
+			// Get the ID of the admin user
+			err = DB.QueryRow("SELECT id FROM users WHERE username = 'calliestoscup'").Scan(&userID)
+			if err != nil {
+				logger.Error().Err(err).Msg("Failed to get the ID of the admin user")
+			}
+		} else {
+			logger.Error().Err(err).Msg("Failed to create admin user")
+		}
 	}
 
 	// Create a home page if it doesn't exist
 	_, err = DB.Exec(
-		"INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) "+
-			"VALUES (NOW(), NOW(), null, 'Home', 'Home Page', '/', $1, null, 1) "+
-			"ON CONFLICT (menu_name, path) DO NOTHING",
+		"INSERT INTO pages (create_date, publish_date, menu_name, draft_menu_name, heading, draft_heading, path, draft_path, creator_id, page_order) "+
+			"VALUES (NOW(), NOW(), 'Home', 'Home', 'Home Page', 'Home Page', '/', '/', $1, 1) "+
+			"ON CONFLICT (menu_name) DO NOTHING",
 		userID)
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create home page")
@@ -111,9 +121,9 @@ func Seed(logger zerolog.Logger) {
 
 	// Create a wildcard page if it doesn't exist
 	_, err = DB.Exec(
-		"INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) "+
-			"VALUES (NOW(), NOW(), null, '', 'Page Not Found', '/*', $1, null, 3) "+
-			"ON CONFLICT (menu_name, path) DO NOTHING",
+		"INSERT INTO pages (create_date, publish_date, heading, path, creator_id, page_order) "+
+			"VALUES (NOW(), NOW(), 'Page Not Found', '/*', $1, 2) "+
+			"ON CONFLICT (path) DO NOTHING",
 		userID)
 	if err != nil {
 		logger.Error().Err(err).Msg("Failed to create wildcard page")

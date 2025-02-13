@@ -11,6 +11,7 @@ import Modals from "./components/Modals";
 
 function App() {
   const [addPage, setAddPage] = useState(false);
+  const [editPage, setEditPage] = useState(false);
   const [login, setLogin] = useState(false);
 
   // useUser fetches the user details from the API
@@ -27,12 +28,19 @@ function App() {
   }
   return (
     <VStack justifyContent={"space-between"} height="100vh">
-      <Header photo={user?.photo} pages={pages} role={user.role} />
+      <Header
+        photo={user?.photo}
+        pages={pages}
+        role={user.role}
+        setEditPage={setEditPage}
+      />
       <AdminButtons
         role={user.role}
         setLogin={setLogin}
         setAddPage={setAddPage}
         addPage={addPage}
+        setEditPage={setEditPage}
+        editPage={editPage}
       />
       <DynamicRoutes role={user.role} />
       <Modals

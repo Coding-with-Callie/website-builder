@@ -14,7 +14,7 @@ const Page = ({ page }: Props) => {
         p={4}
         bg="white"
         boxShadow="lg"
-        borderRadius="lg"
+        borderRadius="sm"
         w="100%"
         textAlign="center"
       >
