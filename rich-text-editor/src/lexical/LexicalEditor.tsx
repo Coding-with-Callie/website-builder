@@ -1,3 +1,4 @@
+// Configuration to set up the editor
 import { LexicalComposer } from '@lexical/react/LexicalComposer'; //core provider for managing the editor instance
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'; // enables the editor to support rich text editing like bold, italic, underline
 import { ListPlugin } from '@lexical/react/LexicalListPlugin'; // enables the editor to support lists

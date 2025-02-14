@@ -1,5 +1,5 @@
 import { Editor } from "@tiptap/react";
-import LinkInputField from "./LinkInputField";
+import LinkInputField from "./LinkInputField"; //imported LinkInputField component for setting link formatting
 import './styles.css';
 
 // ensures that the Toolbar component gets an Editor instance, or safely handles a null value to prevent TS errors
@@ -11,7 +11,7 @@ const TipTapToolbar = ({ editor }: ToolbarProps) => {
     if (!editor) {
         return null; //don't render if the editor is not initialized
     }
-
+// function to unlink a link
 const removeLink = () => {
     if (editor.isActive('link')) {
         editor.chain().focus().unsetLink().run();

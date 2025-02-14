@@ -1,3 +1,4 @@
+// Configuration to set up the editor
 import { useEffect, useRef} from 'react'; // useRef creates a reference to the DOM element
 import Quill from "quill";
 import "quill/dist/quill.snow.css"; // Import Quill's styles
@@ -22,7 +23,7 @@ const QuillEditor = () => {
                         [{ list: "bullet" }],
                         ['link'],
                         ['code-block']
-                    ], //enable the toolbar
+                    ], 
                 },
                 debug: true, // set the debug level 
             }); 

@@ -1,4 +1,4 @@
-//created custom input field for link since once is not provided by TipTap. Alternative is to use a modal.
+//created custom input field for link since one is not provided by TipTap. Alternative is to use a modal.
 import React, {useEffect, useState} from 'react';
 import { Editor } from "@tiptap/react";
 
@@ -9,22 +9,15 @@ interface LinkInputFieldProps {
 const LinkInputField: React.FC<LinkInputFieldProps> = ({ editor }) => {
     const [urlInput, setUrlInput] = useState("");
     const [isInputVisible, setIsInputVisible] = useState(false);
-    const [highlightSelection, setHighlightSelection] = useState<any>(null);
 
     const handleAddLinkClick = () => {
         if (!editor) return;
-
-        // store the current highlighted selection before losing focus
-        setHighlightSelection(editor.state.selection);
 
         setIsInputVisible(true);
     }
 
     const setLink = () => {
         if (!editor) return;
-
-        //restore highlight selection
-        editor.view.dispatch(editor.state.tr.setSelection(highlightSelection));
 
         //ensure the URL has a protocol
         const formattedUrl = 
@@ -39,7 +32,7 @@ const LinkInputField: React.FC<LinkInputFieldProps> = ({ editor }) => {
         setIsInputVisible(false);
     };
 
-    // hide the link input field when any editor change occurs
+    // function to hide the link input field when any editor change occurs
     useEffect(() => {
         if (!editor) return;
 
@@ -53,6 +46,7 @@ const LinkInputField: React.FC<LinkInputFieldProps> = ({ editor }) => {
             editor.off('transaction', handleHideInputField);
         }
     }, [editor])
+
   return (
     <div>
         <button onClick={handleAddLinkClick} disabled={!editor}>Link 🔗</button>

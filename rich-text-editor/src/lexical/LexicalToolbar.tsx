@@ -14,9 +14,10 @@ import { useEffect } from "react";
 const LexicalToolbar = () => {
     const [editor] = useLexicalComposerContext(); //destructure editor instance which gives access to core functionalities and methods
 
+    // function for applying bold, italicize, and underline formats
     const applyTextFormat = (formatType: TextFormatType) => {
       editor.update(() => {
-        const selection = $getSelection();
+        const selection = $getSelection(); // selected text
         // console.log('selection:', selection);
 
             if ($isRangeSelection(selection)) {
@@ -25,17 +26,17 @@ const LexicalToolbar = () => {
                 // Direct string command (e.g. "bold")
                 editor.dispatchCommand(FORMAT_TEXT_COMMAND, formatType);
 
-                // selection.formatText(formatType);
+                // selection.formatText(formatType); // attempts at trying to debug applying multiple formats at a time
             }
       })
     }
 
+    // function for applying bullet, code, and link formats
     const applyBlockFormat = (formatType: BlockFormatType) => {
       editor.update(() => {
         const selection = $getSelection();
         console.log('selection:', selection);
         if ($isRangeSelection(selection)) {
-          // const anchorNode = selection.anchor.getNode();
           const parent = selection.anchor.getNode().getParent();
           console.log('applying element format:', formatType);
 
@@ -76,7 +77,7 @@ const LexicalToolbar = () => {
       })
     }
 
-    // for debugging the applying multiple formats at time issue: exposing editor instance and FORMAT_TEXT_COMMAND globally to see if applying multiple formats, like bold + italicize, at a time works via console. UPDATE: this did not work
+    // for debugging the applying multiple formats at a time issue: exposing editor instance and FORMAT_TEXT_COMMAND globally to see if applying multiple formats, like bold + italicize, at a time works via console. UPDATE: this did not work
     // commands are executing but but not layering the styles correctly
     useEffect(() => {
       // Attach editor instance to window for debugging
@@ -87,14 +88,18 @@ const LexicalToolbar = () => {
 
 
   return (
-    <div className='toolbar'>
+    <div>
+      <h2>Lexical Editor</h2>
+      <div className='toolbar'>
         <button onClick={() => {applyTextFormat('bold')}}>B</button>
         <button onClick={() => {applyTextFormat('italic')}}><i>I</i></button>
         <button onClick={() => {applyTextFormat('underline')}}><u>U</u></button>
         <button onClick={() => {applyBlockFormat('bullet')}}>•</button>
         <button onClick={() => {applyBlockFormat('code')}}>{'</>'}</button>
         <button onClick={() => {applyBlockFormat('link')}}>🔗</button>
+      </div>
     </div>
+    
   )
 }
 
