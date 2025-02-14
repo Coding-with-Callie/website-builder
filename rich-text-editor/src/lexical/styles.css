@@ -1,0 +1,20 @@
+.lexical-editor-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: left;
+    min-height: 150px;
+}
+
+.content-editable {
+    outline: none !important;
+}
+
+.toolbar button {
+    cursor: pointer;
+}
+
+.toolbar button.active {
+    background-color: rgb(171, 168, 168);
+    color: white;
+}
