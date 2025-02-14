@@ -6,6 +6,7 @@ type Props = {
   initialValues: { [key: string]: string };
   setInitialValues: (values: { [key: string]: string }) => void;
   route: string;
+  method?: "post" | "patch";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   responseAction: (response: any) => void;
   heading: string;
@@ -14,6 +15,7 @@ type Props = {
 const Form = ({
   initialValues,
   setInitialValues,
+  method = "post",
   route,
   responseAction,
   heading,
@@ -28,8 +30,7 @@ const Form = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    axiosCustom
-      .post(route, initialValues)
+    axiosCustom[method](route, initialValues)
       .then((response) => {
         responseAction(response);
       })
@@ -60,6 +61,7 @@ const Form = ({
                 onChange={handleChange}
                 placeholder={formatPlaceholder(key)}
                 type={key === "password" ? "password" : "text"}
+                value={initialValues[key]}
               />
             );
           })}

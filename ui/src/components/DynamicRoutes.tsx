@@ -6,9 +6,10 @@ import EditPage from "./EditPage";
 
 type Props = {
   role: "admin" | "guest";
+  setEditPage: (editPage: boolean) => void;
 };
 
-const DynamicRoutes = ({ role }: Props) => {
+const DynamicRoutes = ({ role, setEditPage }: Props) => {
   const { pages } = usePagesContext();
 
   return (
@@ -19,7 +20,7 @@ const DynamicRoutes = ({ role }: Props) => {
           {role === "admin" && (
             <Route
               path={page.path === "/" ? "home/edit" : `${page.path}/edit`}
-              element={<EditPage page={page} />}
+              element={<EditPage page={page} setEditPage={setEditPage} />}
             />
           )}
         </React.Fragment>

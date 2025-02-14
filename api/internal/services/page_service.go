@@ -10,11 +10,13 @@ import (
 
 type PageService interface {
 	GetPages(c *gin.Context) ([]Page, error)
-	CreatePage(menuName string, path string, heading string) error
+	CreatePage(userID float64, menuName string, path string, heading string) error
 	MovePage(c *gin.Context, id string, direction string) error
+	UpdatePage(c *gin.Context, id string, menuName string, path string, heading string) error
 }
 
 type Page struct {
+	ID            int                     `json:"id"`
 	CreateDate    time.Time               `json:"create_date"`
 	PublishDate   *time.Time              `json:"publish_date"`
 	ModifyDate    *time.Time              `json:"modify_date"`
@@ -46,7 +48,7 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 
 	s.logger.Info().Str("role", role.(string)).Msg("Getting pages")
 
-	rows, err := s.db.Query("SELECT create_date, publish_date, modify_date, menu_name, draft_menu_name, heading, draft_heading, path, draft_path, creator_id, metadata FROM pages ORDER BY page_order ASC")
+	rows, err := s.db.Query("SELECT id, create_date, publish_date, modify_date, menu_name, draft_menu_name, heading, draft_heading, path, draft_path, creator_id, metadata FROM pages ORDER BY page_order ASC")
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to get pages")
 		return nil, err
@@ -55,13 +57,14 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 
 	pages := []Page{}
 	for rows.Next() {
+		var id int
 		var createDate time.Time
 		var publishDate, modifyDate *time.Time
 		var path string
 		var draftPath, menuName, heading, draftMenuName, draftHeading *string
 		var creatorID int
 		var metadata *map[string]interface{}
-		err = rows.Scan(&createDate, &publishDate, &modifyDate, &menuName, &draftMenuName, &heading, &draftHeading, &path, &draftPath, &creatorID, &metadata)
+		err = rows.Scan(&id, &createDate, &publishDate, &modifyDate, &menuName, &draftMenuName, &heading, &draftHeading, &path, &draftPath, &creatorID, &metadata)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to scan row")
 			return nil, err
@@ -82,6 +85,7 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 		}
 
 		page := Page{
+			ID:            id,
 			CreateDate:    createDate,
 			PublishDate:   publishDate,
 			ModifyDate:    modifyDate,
@@ -103,7 +107,7 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 	return pages, nil
 }
 
-func (s *pageService) CreatePage(menuName string, path string, heading string) error {
+func (s *pageService) CreatePage(userID float64, menuName string, path string, heading string) error {
 	// Get the highest page order in the table
 	var maxPageOrder int
 	err := s.db.QueryRow("SELECT MAX(page_order) FROM pages").Scan(&maxPageOrder)
@@ -111,9 +115,9 @@ func (s *pageService) CreatePage(menuName string, path string, heading string) e
 		s.logger.Error().Err(err).Msg("Failed to get max page order")
 	}
 
-	s.logger.Info().Str("menuName", menuName).Str("path", path).Str("heading", heading).Int("maxPageOrder", maxPageOrder).Msg("Creating page")
+	s.logger.Info().Str("menuName", menuName).Str("path", path).Str("heading", heading).Int("maxPageOrder", maxPageOrder).Float64("userID", userID).Msg("Creating page")
 
-	_, err = s.db.Exec("INSERT INTO pages (create_date, publish_date, modify_date, menu_name, heading, path, creator_id, metadata, page_order) VALUES (NOW(), null, null, $1, $2, $3, 1, null, $4)", menuName, heading, path, maxPageOrder+1)
+	_, err = s.db.Exec("INSERT INTO pages (create_date, menu_name, heading, path, creator_id, page_order) VALUES (NOW(), $1, $2, $3, $4, $5)", menuName, heading, path, userID, maxPageOrder+1)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to create page")
 		return err
@@ -201,5 +205,39 @@ func (s *pageService) MovePage(c *gin.Context, path string, direction string) er
 
 		s.logger.Info().Str("path", path).Str("direction", direction).Str("username", username.(string)).Msg("Changed page order")
 	}
+	return nil
+}
+
+func (s *pageService) UpdatePage(c *gin.Context, id string, menuName string, path string, heading string) error {
+	// Get the username from the context
+	username, _ := c.Get("username")
+
+	s.logger.Info().Str("id", id).Str("menuName", menuName).Str("path", path).Str("heading", heading).Str("username", username.(string)).Msg("Updating page")
+
+	// Check published menu name, heading, and path
+	var publishedMenuName, publishedHeading, publishedPath string
+	err := s.db.QueryRow("SELECT menu_name, heading, path FROM pages WHERE id = $1", id).Scan(&publishedMenuName, &publishedHeading, &publishedPath)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("Failed to get published page")
+	}
+
+	// If menu name, heading, or path is the same as the published menu name, heading, or path
+	// then set it to null
+	if menuName == publishedMenuName {
+		menuName = ""
+	}
+	if heading == publishedHeading {
+		heading = ""
+	}
+	if path == publishedPath {
+		path = ""
+	}
+
+	_, err = s.db.Exec("UPDATE pages SET draft_menu_name = $1, draft_heading = $2, draft_path = $3 WHERE id = $4", menuName, heading, path, id)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("Failed to update page")
+		return err
+	}
+
 	return nil
 }

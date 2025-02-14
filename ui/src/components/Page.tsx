@@ -7,19 +7,22 @@ type Props = {
 };
 
 const Page = ({ page }: Props) => {
+  const { heading } = page;
   return (
     <VStack w="90%" m="auto" flex={1}>
-      <Heading
-        type="page"
-        p={4}
-        bg="white"
-        boxShadow="lg"
-        borderRadius="sm"
-        w="100%"
-        textAlign="center"
-      >
-        {page.heading}
-      </Heading>
+      {heading && (
+        <Heading
+          type="page"
+          p={4}
+          bg="white"
+          boxShadow="lg"
+          borderRadius="sm"
+          w="100%"
+          textAlign="center"
+        >
+          {heading}
+        </Heading>
+      )}
     </VStack>
   );
 };

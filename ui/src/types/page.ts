@@ -1,4 +1,5 @@
 export type PageType = {
+  id: number;
   create_date: Date;
   creator_id: number;
   heading: string | null;

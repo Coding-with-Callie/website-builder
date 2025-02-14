@@ -35,8 +35,9 @@ func (s *authService) Login(c *gin.Context, username string, password string) (m
 	s.logger.Info().Str("username", username).Msg("Logging in user")
 
 	// Get the user from the database
+	var id int
 	var storedPassword string
-	err := s.db.QueryRow("SELECT password FROM users WHERE username = $1", username).Scan(&storedPassword)
+	err := s.db.QueryRow("SELECT id, password FROM users WHERE username = $1", username).Scan(&id, &storedPassword)
 	if err != nil {
 		s.logger.Error().Err(err).Str("username", username).Msg("Login failed")
 		return nil, err
@@ -54,6 +55,7 @@ func (s *authService) Login(c *gin.Context, username string, password string) (m
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
 		"role":     "admin",
+		"id":       id,
 		"exp":      expirationTime,
 	})
 	tokenString, err := token.SignedString([]byte(s.jwtSecret))

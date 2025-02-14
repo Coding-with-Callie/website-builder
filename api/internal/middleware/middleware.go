@@ -68,12 +68,16 @@ func AuthMiddleware(logger zerolog.Logger) gin.HandlerFunc {
 		claims := token.Claims.(jwt.MapClaims)
 		username := claims["username"].(string)
 		role := claims["role"].(string)
+		id := claims["id"].(float64)
 
 		// Set the username in the context
 		c.Set("username", username)
 
 		// Set the role in the context
 		c.Set("role", role)
+
+		// Set the user ID in the context
+		c.Set("id", id)
 
 		// Continue to the next middleware
 		c.Next()

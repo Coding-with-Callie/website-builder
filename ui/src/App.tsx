@@ -42,7 +42,7 @@ function App() {
         setEditPage={setEditPage}
         editPage={editPage}
       />
-      <DynamicRoutes role={user.role} />
+      <DynamicRoutes role={user.role} setEditPage={setEditPage} />
       <Modals
         addPage={addPage}
         setAddPage={setAddPage}
