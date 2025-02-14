@@ -1,5 +1,5 @@
 // By default, Lexical prevents link clicks from opening in a new tab. Handle clicks explicitly to ensure lexical handles clicks on links correctly.
-// import and add the the component to Lexical Editor 
+// import into LexicalEditor and add the the component inside LexicalComposer 
 // I also needed to ensure that links were properly formatted with http:// or https:// in the LexicalToolbar component 
 import { useEffect } from 'react'
 

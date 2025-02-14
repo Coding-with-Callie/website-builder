@@ -6,6 +6,8 @@ import { $getSelection, $isRangeSelection } from 'lexical'; // function to retre
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'; // a hook that provides access to the Lexical editor context and give you the editor instance-it returns an array with the first element being the editor instance
 import {TextFormatType, BlockFormatType } from './FormatTypes';
 import { $setBlocksType } from '@lexical/selection';
+import './styles.css';
+import { useEffect } from "react";
 
 
 
@@ -15,9 +17,15 @@ const LexicalToolbar = () => {
     const applyTextFormat = (formatType: TextFormatType) => {
       editor.update(() => {
         const selection = $getSelection();
+        // console.log('selection:', selection);
+
             if ($isRangeSelection(selection)) {
+              console.log('Current Selection:', selection);
+              console.log('applying format:', formatType);
                 // Direct string command (e.g. "bold")
                 editor.dispatchCommand(FORMAT_TEXT_COMMAND, formatType);
+
+                // selection.formatText(formatType);
             }
       })
     }
@@ -25,9 +33,11 @@ const LexicalToolbar = () => {
     const applyBlockFormat = (formatType: BlockFormatType) => {
       editor.update(() => {
         const selection = $getSelection();
+        console.log('selection:', selection);
         if ($isRangeSelection(selection)) {
           // const anchorNode = selection.anchor.getNode();
           const parent = selection.anchor.getNode().getParent();
+          console.log('applying element format:', formatType);
 
           switch (formatType) {
             case 'bullet':
@@ -66,31 +76,26 @@ const LexicalToolbar = () => {
       })
     }
 
-    // if (selection.getNodes().some(node => $isCodeNode(node))) {
-    //   selection.getNodes().forEach(node => {
-    //     if ($isCodeNode(node)) {
-    //       node.remove();
-    //     }
-    //   })
-    // } else {
-    //     $setBlocksType(selection, () => $createCodeNode())
-    // }
+    // for debugging the applying multiple formats at time issue: exposing editor instance and FORMAT_TEXT_COMMAND globally to see if applying multiple formats, like bold + italicize, at a time works via console. UPDATE: this did not work
+    // commands are executing but but not layering the styles correctly
+    useEffect(() => {
+      // Attach editor instance to window for debugging
+      (window as any).lexicalEditor = editor;
+      (window as any).FORMAT_TEXT_COMMAND = FORMAT_TEXT_COMMAND;
+  }, [editor]);
+  
 
 
   return (
-    <div>
+    <div className='toolbar'>
         <button onClick={() => {applyTextFormat('bold')}}>B</button>
         <button onClick={() => {applyTextFormat('italic')}}><i>I</i></button>
         <button onClick={() => {applyTextFormat('underline')}}><u>U</u></button>
-        <button onClick={() => {applyBlockFormat('bullet')}}>List</button>
+        <button onClick={() => {applyBlockFormat('bullet')}}>•</button>
         <button onClick={() => {applyBlockFormat('code')}}>{'</>'}</button>
-        <button onClick={() => {applyBlockFormat('link')}}>Link</button>
+        <button onClick={() => {applyBlockFormat('link')}}>🔗</button>
     </div>
   )
 }
 
 export default LexicalToolbar
-
-// function $wrapSelectionElement(selection: RangeSelection) {
-//   throw new Error("Function not implemented.");
-// }

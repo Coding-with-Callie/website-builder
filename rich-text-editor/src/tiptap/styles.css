@@ -1,7 +1,7 @@
 /* To override any centering in the parent container, i.e., ProseMirror */
 .editor-container {
     display: block;
-    /* text-align: left; */
+    text-align: left;
 }
 
 .editor-box {
