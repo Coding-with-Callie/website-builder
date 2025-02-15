@@ -6,6 +6,7 @@ import EditPageForm from "./EditPageForm";
 import { useEffect, useState } from "react";
 import { axiosCustom } from "../utils/axios";
 import usePages from "../hooks/usePages";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   page: PageType;
@@ -14,6 +15,7 @@ type Props = {
 
 const EditPage = ({ page, setEditPage }: Props) => {
   const { setPages } = usePages();
+  const navigate = useNavigate();
 
   const [editPageDetails, setEditPageDetails] = useState(false);
   const draftExists =
@@ -27,8 +29,15 @@ const EditPage = ({ page, setEditPage }: Props) => {
 
   const publishPage = () => {
     axiosCustom.post(`/pages/${page.id}/publish`).then((response) => {
-      console.log(response);
-      setPages(response.data.pages);
+      const pages = response.data.pages;
+
+      setPages(pages);
+
+      // Find the newly published page
+      const currentPage = pages.find((p: PageType) => p.id === page.id);
+
+      // Navigate to it
+      navigate(`${currentPage.path}`);
     });
   };
 
