@@ -244,6 +244,7 @@ func (s *pageService) PublishPage(c *gin.Context, id string) error {
 	query := `
 			UPDATE pages
 			SET
+					publish_date = NOW(),
 					menu_name = CASE WHEN draft_menu_name IS NOT NULL THEN draft_menu_name ELSE menu_name END,
 					heading = CASE WHEN draft_heading IS NOT NULL THEN draft_heading ELSE heading END,
 					path = CASE WHEN draft_path IS NOT NULL THEN draft_path ELSE path END,
