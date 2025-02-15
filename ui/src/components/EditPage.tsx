@@ -37,7 +37,7 @@ const EditPage = ({ page, setEditPage }: Props) => {
           <Button w="100%" onClick={() => setEditPageDetails(true)}>
             Edit Page Details
           </Button>
-          <Button w="100%">Delete Page</Button>
+          {page.path !== "/" && <Button w="100%">Delete Page</Button>}
           {draftExists && (
             <>
               <Text mt={4} textAlign="center" w="100%">

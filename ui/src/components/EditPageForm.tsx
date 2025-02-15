@@ -19,12 +19,19 @@ const EditPageForm = ({
   draft_heading,
   setEditPageDetails,
 }: Props) => {
+  const initialValuesWithPath = {
+    menu_name: draft_menu_name,
+    path: draft_path,
+    heading: draft_heading,
+  };
+
+  const initialValuesWithoutPath = {
+    menu_name: draft_menu_name,
+    heading: draft_heading,
+  };
+
   const [initialValues, setInitialValues] = useState<{ [key: string]: string }>(
-    {
-      menu_name: draft_menu_name,
-      path: draft_path,
-      heading: draft_heading,
-    }
+    draft_path === "/" ? initialValuesWithoutPath : initialValuesWithPath
   );
 
   const { setPages } = usePages();
