@@ -4,6 +4,8 @@ import { Heading } from "../style/heading-recipe";
 import Modal from "./Modal";
 import EditPageForm from "./EditPageForm";
 import { useEffect, useState } from "react";
+import { axiosCustom } from "../utils/axios";
+import usePages from "../hooks/usePages";
 
 type Props = {
   page: PageType;
@@ -11,17 +13,24 @@ type Props = {
 };
 
 const EditPage = ({ page, setEditPage }: Props) => {
+  const { setPages } = usePages();
+
   const [editPageDetails, setEditPageDetails] = useState(false);
   const draftExists =
     page.draft_heading || page.draft_menu_name || page.draft_path
       ? true
       : false;
 
-  console.log("page", page);
-
   useEffect(() => {
     setEditPage(true);
   }, []);
+
+  const publishPage = () => {
+    axiosCustom.post(`/pages/${page.id}/publish`).then((response) => {
+      console.log(response);
+      setPages(response.data.pages);
+    });
+  };
 
   return (
     <>
@@ -46,7 +55,9 @@ const EditPage = ({ page, setEditPage }: Props) => {
               <Text mt={4} textAlign="center" w="100%">
                 What would you like to do with them?
               </Text>
-              <Button w="100%">Publish Changes</Button>
+              <Button w="100%" onClick={publishPage}>
+                Publish Changes
+              </Button>
               <Button w="100%">Reset Changes</Button>
               <Button w="100%">Preview Changes</Button>
             </>

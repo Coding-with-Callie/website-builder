@@ -23,6 +23,7 @@ func RegisterAuthHandlers(router *gin.Engine, authService services.AuthService, 
 	router.GET("/user-details", middleware.AuthMiddleware(logger), func(c *gin.Context) { GetUserDetails(c, authService) })
 	router.GET("/pages", middleware.AuthMiddleware(logger), func(c *gin.Context) { GetPages(c, pageService) })
 	router.POST("/pages", middleware.AuthMiddleware(logger), func(c *gin.Context) { CreatePage(c, pageService) })
+	router.POST("/pages/:id/publish", middleware.AuthMiddleware(logger), func(c *gin.Context) { PublishPage(c, pageService) })
 	router.PATCH("/pages/:id/move", middleware.AuthMiddleware(logger), func(c *gin.Context) { MovePage(c, pageService) })
 	router.PATCH("/pages/:id", middleware.AuthMiddleware(logger), func(c *gin.Context) { UpdatePage(c, pageService) })
 }
@@ -179,6 +180,27 @@ func UpdatePage(c *gin.Context, pageService services.PageService) {
 	err = pageService.UpdatePage(c, pageID, request.MenuName, request.Path, request.Heading)
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Failed to update page"})
+		return
+	}
+
+	// Get pages from the database
+	pages, err := pageService.GetPages(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{"pages": pages})
+}
+
+func PublishPage(c *gin.Context, pageService services.PageService) {
+	pageID := c.Param("id")
+
+	err := pageService.PublishPage(c, pageID)
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Failed to publish page"})
 		return
 	}
 

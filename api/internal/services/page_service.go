@@ -13,6 +13,7 @@ type PageService interface {
 	CreatePage(userID float64, menuName string, path string, heading string) error
 	MovePage(c *gin.Context, id string, direction string) error
 	UpdatePage(c *gin.Context, id string, menuName string, path string, heading string) error
+	PublishPage(c *gin.Context, id string) error
 }
 
 type Page struct {
@@ -228,6 +229,34 @@ func (s *pageService) UpdatePage(c *gin.Context, id string, newMenuName string, 
 	_, err := s.db.Exec(query, newMenuName, newHeading, newPath, id)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to update draft fields")
+	}
+
+	return nil
+}
+
+func (s *pageService) PublishPage(c *gin.Context, id string) error {
+	// Get the username from the context
+	username, _ := c.Get("username")
+
+	s.logger.Info().Str("id", id).Str("username", username.(string)).Msg("Publishing page")
+
+	// Update the current fields and set the draft fields to NULL in a single query
+	query := `
+			UPDATE pages
+			SET
+					menu_name = CASE WHEN draft_menu_name IS NOT NULL THEN draft_menu_name ELSE menu_name END,
+					heading = CASE WHEN draft_heading IS NOT NULL THEN draft_heading ELSE heading END,
+					path = CASE WHEN draft_path IS NOT NULL THEN draft_path ELSE path END,
+					draft_menu_name = NULL,
+					draft_heading = NULL,
+					draft_path = NULL
+			WHERE id = $1
+	`
+
+	_, err := s.db.Exec(query, id)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("Failed to publish page")
+		return err
 	}
 
 	return nil
