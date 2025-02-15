@@ -240,7 +240,7 @@ func (s *pageService) PublishPage(c *gin.Context, id string) error {
 
 	s.logger.Info().Str("id", id).Str("username", username.(string)).Msg("Publishing page")
 
-	// Update the current fields and set the draft fields to NULL in a single query
+	// Update the published fields, set the draft fields to NULL, and set publish date
 	query := `
 			UPDATE pages
 			SET
