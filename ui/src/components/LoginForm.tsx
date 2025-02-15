@@ -4,7 +4,6 @@ import { User } from "../types/user";
 import { PageType } from "../types/page";
 import { useUser } from "../hooks/useUser";
 import usePages from "../hooks/usePages";
-import { useNavigate } from "react-router-dom";
 
 type Props = {
   setLogin: (login: boolean) => void;
@@ -20,16 +19,12 @@ const LoginForm = ({ setLogin }: Props) => {
 
   const { setUser } = useUser();
   const { setPages } = usePages();
-  const navigate = useNavigate();
 
   const responseAction = (response: {
     data: { user: User; pages: PageType[] };
   }) => {
     // Close the modal with the form
     setLogin(false);
-
-    // Redirect to the home page
-    navigate("/");
 
     // Update the user and pages context
     setUser(response.data.user);

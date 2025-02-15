@@ -16,7 +16,10 @@ const DynamicRoutes = ({ role, setEditPage }: Props) => {
     <Routes>
       {pages.map((page) => (
         <React.Fragment key={page.path}>
-          <Route path={page.path} element={<Page page={page} />} />
+          <Route
+            path={page.path}
+            element={<Page page={page} setEditPage={setEditPage} />}
+          />
           {role === "admin" && (
             <Route
               path={page.path === "/" ? "home/edit" : `${page.path}/edit`}
