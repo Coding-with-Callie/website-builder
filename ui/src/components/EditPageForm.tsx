@@ -19,6 +19,8 @@ const EditPageForm = ({
   draft_heading,
   setEditPageDetails,
 }: Props) => {
+  // If we're on the home page, we don't want to be able to edit the path
+  // So, we'll use different initial values depending on the path
   const initialValuesWithPath = {
     menu_name: draft_menu_name,
     path: draft_path,

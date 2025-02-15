@@ -208,35 +208,26 @@ func (s *pageService) MovePage(c *gin.Context, path string, direction string) er
 	return nil
 }
 
-func (s *pageService) UpdatePage(c *gin.Context, id string, menuName string, path string, heading string) error {
+func (s *pageService) UpdatePage(c *gin.Context, id string, newMenuName string, newPath string, newHeading string) error {
 	// Get the username from the context
 	username, _ := c.Get("username")
 
-	s.logger.Info().Str("id", id).Str("menuName", menuName).Str("path", path).Str("heading", heading).Str("username", username.(string)).Msg("Updating page")
+	s.logger.Info().Str("id", id).Str("newMenuName", newMenuName).Str("newPath", newPath).Str("newHeading", newHeading).Str("username", username.(string)).Msg("Updating page")
 
-	// Check published menu name, heading, and path
-	var publishedMenuName, publishedHeading, publishedPath string
-	err := s.db.QueryRow("SELECT menu_name, heading, path FROM pages WHERE id = $1", id).Scan(&publishedMenuName, &publishedHeading, &publishedPath)
+	// Only update draft fields if the draft fields are different from the current fields
+	// Otherwise, set the draft fields to NULL
+	query := `
+    UPDATE pages
+    SET
+        draft_menu_name = CASE WHEN $1 != menu_name THEN $1 ELSE null END,
+        draft_heading = CASE WHEN $2 != heading THEN $2 ELSE null END,
+        draft_path = CASE WHEN $3 != path THEN $3 ELSE null END
+    WHERE id = $4
+`
+
+	_, err := s.db.Exec(query, newMenuName, newHeading, newPath, id)
 	if err != nil {
-		s.logger.Error().Err(err).Msg("Failed to get published page")
-	}
-
-	// If menu name, heading, or path is the same as the published menu name, heading, or path
-	// then set it to null
-	if menuName == publishedMenuName {
-		menuName = ""
-	}
-	if heading == publishedHeading {
-		heading = ""
-	}
-	if path == publishedPath {
-		path = ""
-	}
-
-	_, err = s.db.Exec("UPDATE pages SET draft_menu_name = $1, draft_heading = $2, draft_path = $3 WHERE id = $4", menuName, heading, path, id)
-	if err != nil {
-		s.logger.Error().Err(err).Msg("Failed to update page")
-		return err
+		s.logger.Error().Err(err).Msg("Failed to update draft fields")
 	}
 
 	return nil
