@@ -14,6 +14,7 @@ type PageService interface {
 	MovePage(c *gin.Context, id string, direction string) error
 	UpdatePage(c *gin.Context, id string, menuName string, path string, heading string) error
 	PublishPage(c *gin.Context, id string) error
+	DeletePage(c *gin.Context, id string) error
 }
 
 type Page struct {
@@ -257,6 +258,21 @@ func (s *pageService) PublishPage(c *gin.Context, id string) error {
 	_, err := s.db.Exec(query, id)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to publish page")
+		return err
+	}
+
+	return nil
+}
+
+func (s *pageService) DeletePage(c *gin.Context, id string) error {
+	// Get the username from the context
+	username, _ := c.Get("username")
+
+	s.logger.Info().Str("id", id).Str("username", username.(string)).Msg("Deleting page")
+
+	_, err := s.db.Exec("DELETE FROM pages WHERE id = $1", id)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("Failed to delete page")
 		return err
 	}
 

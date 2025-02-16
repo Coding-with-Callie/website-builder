@@ -26,6 +26,7 @@ func RegisterAuthHandlers(router *gin.Engine, authService services.AuthService, 
 	router.POST("/pages/:id/publish", middleware.AuthMiddleware(logger), func(c *gin.Context) { PublishPage(c, pageService) })
 	router.PATCH("/pages/:id/move", middleware.AuthMiddleware(logger), func(c *gin.Context) { MovePage(c, pageService) })
 	router.PATCH("/pages/:id", middleware.AuthMiddleware(logger), func(c *gin.Context) { UpdatePage(c, pageService) })
+	router.DELETE("/pages/:id", middleware.AuthMiddleware(logger), func(c *gin.Context) { DeletePage(c, pageService) })
 }
 
 func Login(c *gin.Context, authService services.AuthService, pageService services.PageService) {
@@ -201,6 +202,27 @@ func PublishPage(c *gin.Context, pageService services.PageService) {
 	err := pageService.PublishPage(c, pageID)
 	if err != nil {
 		c.JSON(500, gin.H{"message": "Failed to publish page"})
+		return
+	}
+
+	// Get pages from the database
+	pages, err := pageService.GetPages(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid request",
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{"pages": pages})
+}
+
+func DeletePage(c *gin.Context, pageService services.PageService) {
+	pageID := c.Param("id")
+
+	err := pageService.DeletePage(c, pageID)
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Failed to delete page"})
 		return
 	}
 

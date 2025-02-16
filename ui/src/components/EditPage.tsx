@@ -41,6 +41,17 @@ const EditPage = ({ page, setEditPage }: Props) => {
     });
   };
 
+  const deletePage = () => {
+    axiosCustom.delete(`/pages/${page.id}`).then((response) => {
+      const pages = response.data.pages;
+
+      setPages(pages);
+
+      // Navigate to the home page
+      navigate("/");
+    });
+  };
+
   return (
     <>
       <HStack flex={1} w="100%" px={4} gap={4} mb={10}>
@@ -55,7 +66,11 @@ const EditPage = ({ page, setEditPage }: Props) => {
           <Button w="100%" onClick={() => setEditPageDetails(true)}>
             Edit Page Details
           </Button>
-          {page.path !== "/" && <Button w="100%">Delete Page</Button>}
+          {page.path !== "/" && (
+            <Button w="100%" onClick={deletePage}>
+              Delete Page
+            </Button>
+          )}
           {draftExists && (
             <>
               <Text mt={4} textAlign="center" w="100%">
