@@ -19,6 +19,8 @@ func Connect(logger zerolog.Logger) {
 	user := config.DBUser
 	password := config.DBPassword
 
+	logger.Info().Str("user", user).Str("password", password).Msg("Connecting to database")
+
 	// Connect to defailt postgres database
 	db, err := sql.Open("postgres", fmt.Sprintf("user=%s password=%s dbname=postgres sslmode=disable", user, password))
 	if err != nil {

@@ -14,6 +14,9 @@ export const headingRecipe = defineRecipe({
         fontFamily: "Pacifico",
       },
       page: {
+        fontSize: "24px",
+      },
+      section: {
         fontSize: "20px",
       },
     },
