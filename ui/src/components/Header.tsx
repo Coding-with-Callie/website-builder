@@ -1,9 +1,11 @@
-import { Box, HStack } from "@chakra-ui/react";
+import { Box, HStack, Icon } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import sloth from "../assets/sloth.png";
 import { Avatar } from "./ui/avatar";
 import { Heading } from "../style/heading-recipe";
 import { PageType } from "../types/page";
+import { RiDraftLine } from "react-icons/ri";
+import { heading } from "../style/theme";
 
 type Props = {
   photo?: string;
@@ -32,13 +34,22 @@ const Header = ({ photo, pages, setEditPage }: Props) => {
           return (
             <Box key={page.path}>
               {page.menu_name && (
-                <Link
-                  to={page.path}
-                  key={page.path}
-                  onClick={() => setEditPage(false)}
-                >
-                  <Heading mx={2}>{page.menu_name}</Heading>
-                </Link>
+                <>
+                  <Link
+                    to={page.path}
+                    key={page.path}
+                    onClick={() => setEditPage(false)}
+                  >
+                    <HStack px={2}>
+                      <Heading>{page.menu_name}</Heading>
+                      {!page.publish_date && (
+                        <Icon color={heading}>
+                          <RiDraftLine />
+                        </Icon>
+                      )}
+                    </HStack>
+                  </Link>
+                </>
               )}
             </Box>
           );

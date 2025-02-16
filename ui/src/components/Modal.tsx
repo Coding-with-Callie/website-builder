@@ -9,11 +9,17 @@ type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
   children: React.ReactNode;
+  alert?: boolean;
 };
 
-const Modal = ({ open, setOpen, children }: Props) => {
+const Modal = ({ open, setOpen, children, alert = false }: Props) => {
   return (
-    <DialogRoot open={open} onOpenChange={(e) => setOpen(e.open)} size="lg">
+    <DialogRoot
+      open={open}
+      onOpenChange={(e) => setOpen(e.open)}
+      size="lg"
+      role={alert ? "alertdialog" : "dialog"}
+    >
       <DialogBackdrop />
       <DialogContent
         p={4}

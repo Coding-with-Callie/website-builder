@@ -6,7 +6,7 @@ import { system } from "./style/theme.ts";
 // @ts-expect-error - no types available
 import "@fontsource/pacifico";
 import { PagesProvider } from "./components/PagesProvider.tsx";
-import App from "./App.tsx";
+import App from "./components/App.tsx";
 import { UserProvider } from "./components/UserProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(

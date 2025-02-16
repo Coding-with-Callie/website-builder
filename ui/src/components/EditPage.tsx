@@ -11,13 +11,15 @@ import { useNavigate } from "react-router-dom";
 type Props = {
   page: PageType;
   setEditPage: (editPage: boolean) => void;
+  setDeletePage: (deletePage: boolean) => void;
 };
 
-const EditPage = ({ page, setEditPage }: Props) => {
+const EditPage = ({ page, setEditPage, setDeletePage }: Props) => {
   const { setPages } = usePages();
   const navigate = useNavigate();
 
   const [editPageDetails, setEditPageDetails] = useState(false);
+
   const draftExists =
     page.draft_heading || page.draft_menu_name || page.draft_path
       ? true
@@ -41,17 +43,6 @@ const EditPage = ({ page, setEditPage }: Props) => {
     });
   };
 
-  const deletePage = () => {
-    axiosCustom.delete(`/pages/${page.id}`).then((response) => {
-      const pages = response.data.pages;
-
-      setPages(pages);
-
-      // Navigate to the home page
-      navigate("/");
-    });
-  };
-
   return (
     <>
       <HStack flex={1} w="100%" px={4} gap={4} mb={10}>
@@ -67,7 +58,7 @@ const EditPage = ({ page, setEditPage }: Props) => {
             Edit Page Details
           </Button>
           {page.path !== "/" && (
-            <Button w="100%" onClick={deletePage}>
+            <Button w="100%" onClick={() => setDeletePage(true)}>
               Delete Page
             </Button>
           )}
@@ -84,6 +75,16 @@ const EditPage = ({ page, setEditPage }: Props) => {
               </Button>
               <Button w="100%">Reset Changes</Button>
               <Button w="100%">Preview Changes</Button>
+            </>
+          )}
+          {!page.publish_date && (
+            <>
+              <Text mt={4} textAlign="center" w="100%">
+                This page has not been published yet!
+              </Text>
+              <Button w="100%" onClick={publishPage}>
+                Publish Page
+              </Button>
             </>
           )}
         </VStack>
