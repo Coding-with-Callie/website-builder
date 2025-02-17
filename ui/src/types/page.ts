@@ -1,3 +1,5 @@
+import { SectionType } from "./section";
+
 export type PageType = {
   id: number;
   create_date: Date;
@@ -12,4 +14,5 @@ export type PageType = {
   draft_path: string | null;
   publish_date: Date | null;
   show?: boolean;
+  sections: SectionType[];
 };

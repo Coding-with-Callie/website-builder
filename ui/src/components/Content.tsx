@@ -1,11 +1,13 @@
-import { VStack } from "@chakra-ui/react";
 import { Heading } from "../style/heading-recipe";
 import ImageAndText from "./ImageAndText";
 import Images from "./Images";
+import TextContent from "./TextContent";
 
 export type HeadingDataType = {
   text: string;
 };
+
+export type TextDataType = string[];
 
 export type ImageAndTextDataType = {
   image: {
@@ -13,9 +15,7 @@ export type ImageAndTextDataType = {
     alt: string;
     maxWidth: string;
   };
-  text: {
-    textBlocks: string[];
-  };
+  text: TextDataType;
 };
 
 export type ImagesDataType = {
@@ -26,38 +26,29 @@ export type ImagesDataType = {
 };
 
 export type ContentType = {
-  type: "heading" | "image_and_text" | "images";
-  data: HeadingDataType | ImageAndTextDataType | ImagesDataType;
+  type: "heading" | "image_and_text" | "images" | "text";
+  data: HeadingDataType | ImageAndTextDataType | ImagesDataType | TextDataType;
 };
 
 type Props = {
-  data: ContentType[];
+  content: ContentType;
 };
 
-const Content = ({ data }: Props) => {
-  return (
-    <VStack gap={4} align="start">
-      {data.map((content, index) => {
-        if (content.type === "heading") {
-          const data = content.data as HeadingDataType;
-          return (
-            <Heading key={index} type="section">
-              {data.text}
-            </Heading>
-          );
-        } else if (content.type === "image_and_text") {
-          const data = content.data as ImageAndTextDataType;
-          return (
-            <ImageAndText key={index} image={data.image} text={data.text} />
-          );
-        } else if (content.type === "images") {
-          const data = content.data as ImagesDataType;
-          return <Images key={index} images={data.images} />;
-        }
-        return null;
-      })}
-    </VStack>
-  );
+const Content = ({ content }: Props) => {
+  if (content.type === "heading") {
+    const { text } = content.data as HeadingDataType;
+    return <Heading type="section">{text}</Heading>;
+  } else if (content.type === "image_and_text") {
+    const { image, text } = content.data as ImageAndTextDataType;
+    return <ImageAndText image={image} text={text} />;
+  } else if (content.type === "images") {
+    const { images } = content.data as ImagesDataType;
+    return <Images images={images} />;
+  } else if (content.type === "text") {
+    const textBlocks = content.data as TextDataType;
+    return <TextContent textBlocks={textBlocks} />;
+  }
+  return null;
 };
 
 export default Content;

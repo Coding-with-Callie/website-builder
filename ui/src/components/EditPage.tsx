@@ -45,7 +45,7 @@ const EditPage = ({ page, setEditPage, setDeletePage }: Props) => {
 
   return (
     <>
-      <HStack flex={1} w="100%" px={4} gap={4} mb={10}>
+      <HStack flex={1} w="100%" px={4} gap={4} m={12}>
         <VStack
           p={4}
           bg="white"

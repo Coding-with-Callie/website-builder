@@ -71,7 +71,7 @@ const AdminButtons = ({
   };
 
   return (
-    <HStack justifyContent="flex-end" p={4} w="100%">
+    <HStack justifyContent="flex-end" w="100%" p={2} position="fixed" top={20}>
       <IconButton
         aria-label="Edit Page"
         rounded="full"
