@@ -10,7 +10,7 @@ const Footer = () => {
       boxShadow="lg"
       bg="white"
       justifyContent="center"
-      mt={10}
+      mt={20}
     >
       <Heading>Contact Callie:</Heading>
       {["linkedin", "youtube", "github", "mail"].map((type) => (
