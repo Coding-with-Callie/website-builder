@@ -3,38 +3,8 @@ import { PageType } from "../types/page";
 import { Heading } from "../style/heading-recipe";
 import { useEffect } from "react";
 import { Section } from "../style/section-recipe";
-import Row from "./Row";
 import placeholder from "../assets/placeholder.jpg";
-
-const row1 = [
-  {
-    type: "heading" as const,
-    data: { text: "Heading" },
-  },
-];
-
-const row2 = [
-  {
-    type: "image" as const,
-    data: {
-      src: placeholder,
-      alt: "Placeholder",
-      maxWidth: "400px",
-    },
-  },
-  {
-    type: "text" as const,
-    data: {
-      textBlocks: [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Phasellus vel fermentum purus. Ut sit amet ultrices erat. Fusce suscipit ante sed metus sagittis, sollicitudin sollicitudin lectus consequat. Praesent vitae arcu quis massa viverra sodales. Mauris suscipit mi magna. Fusce porta a purus id gravida. Donec eget facilisis tortor. Integer dignissim urna et nulla commodo, id pretium leo accumsan.",
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        "Phasellus vel fermentum purus. Ut sit amet ultrices erat. Fusce suscipit ante sed metus sagittis, sollicitudin sollicitudin lectus consequat. Praesent vitae arcu quis massa viverra sodales. Mauris suscipit mi magna. Fusce porta a purus id gravida. Donec eget facilisis tortor. Integer dignissim urna et nulla commodo, id pretium leo accumsan.",
-        "Suspendisse quis ipsum dolor. Phasellus maximus volutpat diam id pulvinar. Mauris eleifend enim nisl, eu venenatis diam tincidunt quis. Nullam velit eros, tincidunt vitae bibendum vel, suscipit sed purus. Maecenas tincidunt odio eu odio ornare fermentum. Praesent quis tortor lorem. Nulla eu sapien vitae nunc porttitor sollicitudin. Morbi sit amet convallis ante. Maecenas euismod vitae nisi ac vestibulum. Donec eu dapibus mauris, ac rutrum velit. Donec quis sapien a ex egestas ornare at ut metus.",
-      ],
-    },
-  },
-];
+import Content from "./Content";
 
 type Props = {
   page: PageType;
@@ -58,8 +28,55 @@ const Page = ({ page, setEditPage }: Props) => {
         </Section>
       )}
       <Section>
-        <Row items={row1} />
-        <Row items={row2} />
+        <Content
+          data={[
+            {
+              type: "heading",
+              data: { text: "Lorem Ipsum" },
+            },
+            {
+              type: "image_and_text",
+              data: {
+                image: {
+                  src: placeholder,
+                  alt: "Placeholder",
+                  maxWidth: "400px",
+                },
+                text: {
+                  textBlocks: [
+                    "Morbi ut justo ac sem egestas convallis at id magna. Nullam consequat, risus id fringilla aliquam, ligula sapien varius urna, vitae fermentum lacus eros sit amet mi. Nulla tincidunt leo tellus, vestibulum euismod neque pretium nec. Etiam euismod aliquet elementum. Integer laoreet massa at orci cursus, sed volutpat nunc malesuada. Etiam vehicula ligula sit amet nibh interdum tristique. In ultrices lectus a feugiat volutpat. Suspendisse potenti. Ut et leo ac nisi viverra sagittis vitae sed metus. Nam dignissim facilisis metus, vel pellentesque lacus scelerisque eu.",
+                    "Duis in convallis ex, eu ultricies arcu. Pellentesque blandit, mauris sed fermentum interdum, purus quam auctor lectus, quis porttitor ex erat vitae nunc. Morbi velit leo, pellentesque pretium blandit nec, finibus ac magna. Vestibulum molestie ipsum vitae pulvinar pharetra. In hac habitasse platea dictumst. Sed finibus augue sit amet dui pulvinar vulputate. Integer et dictum purus, sit amet lacinia quam. Pellentesque velit velit, varius id ante vel, vulputate ultrices justo. Duis a dui sed libero volutpat condimentum.",
+                    "Suspendisse non magna aliquet, faucibus ipsum vel, pharetra dolor. Pellentesque efficitur magna quis nisi facilisis venenatis. Mauris elementum libero odio, vel pulvinar mauris porttitor ut. Vestibulum dictum rutrum est, id sollicitudin tellus condimentum sit amet. Donec condimentum suscipit viverra. Quisque a nunc dui. Praesent cursus ante quis lacus consequat faucibus. Nulla egestas quis magna eget blandit. Phasellus ut accumsan dolor, eu maximus arcu. Phasellus ullamcorper diam sit amet urna laoreet ultrices.",
+                    "Nulla pharetra pharetra libero a porttitor. Integer sollicitudin interdum facilisis. Morbi volutpat urna ut nisl sodales, ut suscipit augue fermentum. Cras consectetur non lacus in laoreet. Nullam finibus sollicitudin ipsum, id eleifend mauris aliquam quis. Duis elementum congue erat, auctor ullamcorper leo luctus vel. Morbi et hendrerit ante, at maximus velit. Nam vulputate id nulla quis sodales. Vestibulum lorem dolor, tristique pretium mollis sit amet, vestibulum facilisis nibh. Vivamus lobortis eros nec luctus mollis. Ut ut consectetur felis. Nullam viverra ex vitae nisl rutrum rhoncus.",
+                  ],
+                },
+              },
+            },
+            {
+              type: "images",
+              data: {
+                images: [
+                  {
+                    src: placeholder,
+                    alt: "Placeholder",
+                  },
+                  {
+                    src: placeholder,
+                    alt: "Placeholder",
+                  },
+                  {
+                    src: placeholder,
+                    alt: "Placeholder",
+                  },
+                  {
+                    src: placeholder,
+                    alt: "Placeholder",
+                  },
+                ],
+              },
+            },
+          ]}
+        />
       </Section>
     </VStack>
   );

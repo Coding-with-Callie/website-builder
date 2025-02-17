@@ -9,7 +9,6 @@ export const sectionRecipe = defineRecipe({
     p: 4,
     display: "flex",
     flexDirection: "column",
-    gap: 2,
   },
 });
 

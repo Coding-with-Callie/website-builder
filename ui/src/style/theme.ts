@@ -47,8 +47,8 @@ export const getColors = (color: string) => {
 
 const config = defineConfig({
   globalCss: {
-    body: {
-      backgroundColor: "#9eadbd",
+    html: {
+      backgroundColor: mainBackground,
     },
   },
   theme: {
