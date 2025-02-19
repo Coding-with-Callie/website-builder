@@ -1,4 +1,4 @@
-import { Button, HStack, Text } from "@chakra-ui/react";
+import { Button, HStack, Text, VStack } from "@chakra-ui/react";
 import { Heading } from "../style/heading-recipe";
 import { axiosCustom } from "../utils/axios";
 import usePages from "../hooks/usePages";
@@ -28,8 +28,8 @@ const DeleteModal = ({ setDeletePage }: Props) => {
   };
 
   return (
-    <>
-      <Heading>Are you sure?</Heading>
+    <VStack gap={10}>
+      <Heading w="100%">Are you sure?</Heading>
       <Text>
         This action cannot be undone. This will permanently delete the page and
         remove your page data from our systems.
@@ -45,7 +45,7 @@ const DeleteModal = ({ setDeletePage }: Props) => {
           Cancel
         </Button>
       </HStack>
-    </>
+    </VStack>
   );
 };
 

@@ -5,8 +5,6 @@ type Props = {
 };
 
 const TextContent = ({ textBlocks }: Props) => {
-  console.log("textBlocks", textBlocks);
-
   return (
     <HStack gap={4} justifyContent="center">
       {textBlocks.map((text, index) => (

@@ -31,8 +31,8 @@ const EditPage = ({ page, setEditPage, setDeletePage }: Props) => {
 
   const publishPage = () => {
     axiosCustom.post(`/pages/${page.id}/publish`).then((response) => {
+      // Update the pages
       const pages = response.data.pages;
-
       setPages(pages);
 
       // Find the newly published page

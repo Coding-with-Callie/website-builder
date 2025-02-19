@@ -18,7 +18,7 @@ const Page = ({ page, setEditPage }: Props) => {
   }, []);
 
   return (
-    <VStack flex={1} gap={4} m={12}>
+    <VStack flex={1} gap={4} p={12} w="100%">
       {heading && (
         <Section>
           <Heading type="page" textAlign="center">
@@ -26,17 +26,20 @@ const Page = ({ page, setEditPage }: Props) => {
           </Heading>
         </Section>
       )}
-      {page.sections.map((section, index) => {
-        const content = section.data as ContentType[];
-        console.log("content", content);
-        return (
-          <Section key={index}>
-            {content.map((content, index) => (
-              <Content key={index} content={content} />
-            ))}
-          </Section>
-        );
-      })}
+      {page.sections &&
+        page.sections.map((section, index) => {
+          const content = section.data as ContentType[];
+
+          console.log("Content:", content);
+
+          return (
+            <Section key={index}>
+              {content.map((content, index) => (
+                <Content key={index} content={content} />
+              ))}
+            </Section>
+          );
+        })}
     </VStack>
   );
 };

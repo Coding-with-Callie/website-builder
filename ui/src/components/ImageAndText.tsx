@@ -6,9 +6,7 @@ type Props = {
     alt: string;
     maxWidth?: string;
   };
-  text: {
-    textBlocks: string[];
-  };
+  text: string[];
 };
 
 const ImageAndText = ({ image, text }: Props) => {
@@ -25,7 +23,7 @@ const ImageAndText = ({ image, text }: Props) => {
         mx={4}
       />
       <Box>
-        {text.textBlocks.map((text, index) => (
+        {text.map((text, index) => (
           <Text key={index} mb={4}>
             {text}
           </Text>

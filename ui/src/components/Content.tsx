@@ -1,6 +1,7 @@
 import { Heading } from "../style/heading-recipe";
 import ImageAndText from "./ImageAndText";
 import Images from "./Images";
+import ImagesWithCaptions, { ImageWithCaptionType } from "./ImagesWithCaptions";
 import TextContent from "./TextContent";
 
 export type HeadingDataType = {
@@ -25,9 +26,16 @@ export type ImagesDataType = {
   }[];
 };
 
+export type ImagesWithCaptionsType = ImageWithCaptionType[];
+
 export type ContentType = {
   type: "heading" | "image_and_text" | "images" | "text";
-  data: HeadingDataType | ImageAndTextDataType | ImagesDataType | TextDataType;
+  data:
+    | HeadingDataType
+    | ImageAndTextDataType
+    | ImagesDataType
+    | TextDataType
+    | ImagesWithCaptionsType;
 };
 
 type Props = {
@@ -47,6 +55,10 @@ const Content = ({ content }: Props) => {
   } else if (content.type === "text") {
     const textBlocks = content.data as TextDataType;
     return <TextContent textBlocks={textBlocks} />;
+  } else if (content.type === "images_with_captions") {
+    const images = content.data as ImagesWithCaptionsType;
+    console.log("Images:", images);
+    return <ImagesWithCaptions images={images} />;
   }
   return null;
 };
