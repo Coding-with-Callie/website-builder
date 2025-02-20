@@ -30,8 +30,6 @@ const Page = ({ page, setEditPage }: Props) => {
         page.sections.map((section, index) => {
           const content = section.data as ContentType[];
 
-          console.log("Content:", content);
-
           return (
             <Section key={index}>
               {content.map((content, index) => (

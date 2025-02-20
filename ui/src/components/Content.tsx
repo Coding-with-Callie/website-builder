@@ -17,6 +17,7 @@ export type ImageAndTextDataType = {
     maxWidth: string;
   };
   text: TextDataType;
+  textFirst: boolean;
 };
 
 export type ImagesDataType = {
@@ -47,8 +48,8 @@ const Content = ({ content }: Props) => {
     const { text } = content.data as HeadingDataType;
     return <Heading type="section">{text}</Heading>;
   } else if (content.type === "image_and_text") {
-    const { image, text } = content.data as ImageAndTextDataType;
-    return <ImageAndText image={image} text={text} />;
+    const { image, text, textFirst } = content.data as ImageAndTextDataType;
+    return <ImageAndText image={image} text={text} textFirst={textFirst} />;
   } else if (content.type === "images") {
     const { images } = content.data as ImagesDataType;
     return <Images images={images} />;
@@ -57,7 +58,6 @@ const Content = ({ content }: Props) => {
     return <TextContent textBlocks={textBlocks} />;
   } else if (content.type === "images_with_captions") {
     const images = content.data as ImagesWithCaptionsType;
-    console.log("Images:", images);
     return <ImagesWithCaptions images={images} />;
   }
   return null;

@@ -7,9 +7,10 @@ type Props = {
     maxWidth?: string;
   };
   text: string[];
+  textFirst?: boolean;
 };
 
-const ImageAndText = ({ image, text }: Props) => {
+const ImageAndText = ({ image, text, textFirst = true }: Props) => {
   return (
     <Box>
       <Image
@@ -17,10 +18,10 @@ const ImageAndText = ({ image, text }: Props) => {
         alt={image.alt}
         borderRadius="sm"
         maxW={image.maxWidth || "50%"}
-        float="right"
+        float={textFirst ? "right" : "left"}
         display="inline"
-        mb={4}
-        mx={4}
+        mr={textFirst ? 0 : 4}
+        ml={textFirst ? 4 : 0}
       />
       <Box>
         {text.map((text, index) => (
