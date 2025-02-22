@@ -3,7 +3,8 @@ import { PageType } from "../types/page";
 import { Heading } from "../style/heading-recipe";
 import { useEffect } from "react";
 import { Section } from "../style/section-recipe";
-import Content, { ContentType } from "./Content";
+import Content from "./Content/Content";
+import { ContentType } from "../types/content";
 
 type Props = {
   page: PageType;

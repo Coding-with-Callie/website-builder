@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { axiosCustom } from "../utils/axios";
 import usePages from "../hooks/usePages";
 import { useNavigate } from "react-router-dom";
+import SectionsToAdd from "./SectionsToAdd";
 
 type Props = {
   page: PageType;
@@ -19,6 +20,7 @@ const EditPage = ({ page, setEditPage, setDeletePage }: Props) => {
   const navigate = useNavigate();
 
   const [editPageDetails, setEditPageDetails] = useState(false);
+  const [showSectionsToAdd, setShowSectionsToAdd] = useState(false);
 
   const draftExists =
     page.draft_heading || page.draft_menu_name || page.draft_path
@@ -106,7 +108,14 @@ const EditPage = ({ page, setEditPage, setDeletePage }: Props) => {
               Add a Heading!
             </Button>
           )}
-          <Button w="100%">Add a Section!</Button>
+
+          {showSectionsToAdd ? (
+            <SectionsToAdd />
+          ) : (
+            <Button w="100%" onClick={() => setShowSectionsToAdd(true)}>
+              Add a Section!
+            </Button>
+          )}
         </VStack>
       </HStack>
       <Modal open={editPageDetails} setOpen={setEditPageDetails}>

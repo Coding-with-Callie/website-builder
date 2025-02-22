@@ -1,11 +1,5 @@
 import { Text, HStack, Image, VStack } from "@chakra-ui/react";
-import { ImagesWithCaptionsType } from "./Content";
-
-export type ImageWithCaptionType = {
-  src: string;
-  alt: string;
-  caption: string;
-};
+import { ImagesWithCaptionsType } from "../../types/content";
 
 type Props = {
   images: ImagesWithCaptionsType;
@@ -22,9 +16,11 @@ const ImagesWithCaptions = ({ images }: Props) => {
             alt={image.alt}
             borderRadius="sm"
           />
-          <Text key={index} flex={1}>
-            {image.caption}
-          </Text>
+          {image.caption && (
+            <Text key={index} flex={1}>
+              {image.caption}
+            </Text>
+          )}
         </VStack>
       ))}
     </HStack>

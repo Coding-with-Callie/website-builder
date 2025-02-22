@@ -10,15 +10,23 @@ type Props = {
   setOpen: (open: boolean) => void;
   children: React.ReactNode;
   alert?: boolean;
+  size?: "lg" | "cover";
 };
 
-const Modal = ({ open, setOpen, children, alert = false }: Props) => {
+const Modal = ({
+  open,
+  setOpen,
+  children,
+  alert = false,
+  size = "lg",
+}: Props) => {
   return (
     <DialogRoot
       open={open}
       onOpenChange={(e) => setOpen(e.open)}
-      size="lg"
+      size={size}
       role={alert ? "alertdialog" : "dialog"}
+      scrollBehavior="outside"
     >
       <DialogBackdrop />
       <DialogContent
@@ -28,6 +36,10 @@ const Modal = ({ open, setOpen, children, alert = false }: Props) => {
         borderRadius="lg"
         position="fixed"
         top="5%"
+        left={size === "lg" ? "" : "5%"}
+        w={size === "lg" ? "" : "90%"}
+        h={size === "lg" ? "" : "90%"}
+        overflow="auto"
       >
         {children}
         <DialogCloseTrigger />
