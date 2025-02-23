@@ -21,9 +21,45 @@ import FourImagesWithCaptions from "../assets/FourImagesWithCaptions.png";
 import Video from "../assets/Video.png";
 import VideoWithCaption from "../assets/VideoWithCaption.png";
 import { Heading } from "../style/heading-recipe";
+import { text } from "../style/theme";
+
+const ContentChoiceWrapper = ({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) => (
+  <HStack
+    w="100%"
+    borderWidth={1}
+    borderRadius="sm"
+    _hover={{ cursor: "pointer" }}
+    position="relative"
+    height="100%"
+    justifyContent={"center"}
+    onClick={onClick}
+  >
+    <Box
+      position="absolute"
+      zIndex="1"
+      backgroundColor={text}
+      width="100%"
+      height="100%"
+      opacity={0}
+      _hover={{ opacity: 0.15 }}
+      borderRadius={"sm"}
+      borderWidth={1}
+    ></Box>
+    {children}
+  </HStack>
+);
 
 const SectionsToAdd = () => {
   const [open, setOpen] = useState(false);
+  const [contentChoice, setContentChoice] = useState<string | null>(null);
+
+  console.log("contentChoice", contentChoice);
 
   return (
     <>
@@ -41,46 +77,43 @@ const SectionsToAdd = () => {
           <Heading type="section" textAlign="left" w="100%">
             Heading
           </Heading>
-          <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
-              <Image src={HeadingPhoto} alt="placeholder" borderRadius="sm" />
-            </Box>
-          </HStack>
+          <ContentChoiceWrapper onClick={() => setContentChoice("heading")}>
+            <Image src={HeadingPhoto} alt="placeholder" borderRadius="sm" />
+          </ContentChoiceWrapper>
         </VStack>
         <VStack gap={4} mb={4}>
           <Heading type="section" textAlign="left" w="100%">
             Text
           </Heading>
-          <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
-              <Image src={TextPhoto} alt="placeholder" borderRadius="sm" />
-            </Box>
-          </HStack>
+          <ContentChoiceWrapper onClick={() => setContentChoice("text")}>
+            <Image src={TextPhoto} alt="placeholder" borderRadius="sm" />
+          </ContentChoiceWrapper>
         </VStack>
         <VStack gap={4} mb={4}>
           <Heading type="section" textAlign="left" w="100%">
             Images
           </Heading>
           <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
+            <ContentChoiceWrapper onClick={() => setContentChoice("one-image")}>
               <Image src={OneImage} alt="placeholder" borderRadius="sm" />
-            </Box>
-            <Box borderWidth={1} borderRadius="sm">
+            </ContentChoiceWrapper>
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("two-images")}
+            >
               <Image src={TwoImages} alt="placeholder" borderRadius="sm" />
-            </Box>
+            </ContentChoiceWrapper>
           </HStack>
           <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("three-images")}
+            >
               <Image src={ThreeImages} alt="placeholder" borderRadius="sm" />
-            </Box>
-            <HStack
-              borderWidth={1}
-              borderRadius="sm"
-              height="100%"
-              justifyContent={"center"}
+            </ContentChoiceWrapper>
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("four-images")}
             >
               <Image src={FourImages} alt="placeholder" borderRadius="sm" />
-            </HStack>
+            </ContentChoiceWrapper>
           </HStack>
         </VStack>
         <VStack gap={4} mb={4}>
@@ -88,41 +121,44 @@ const SectionsToAdd = () => {
             Images with Captions
           </Heading>
           <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("one-image-with-caption")}
+            >
               <Image
                 src={OneImageWithCaption}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
-            <Box borderWidth={1} borderRadius="sm">
+            </ContentChoiceWrapper>
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("two-images-with-captions")}
+            >
               <Image
                 src={TwoImagesWithCaptions}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
+            </ContentChoiceWrapper>
           </HStack>
           <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("three-images-with-captions")}
+            >
               <Image
                 src={ThreeImagesWithCaptions}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
-            <HStack
-              borderWidth={1}
-              borderRadius="sm"
-              height="100%"
-              justifyContent={"center"}
+            </ContentChoiceWrapper>
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("four-images-with-captions")}
             >
               <Image
                 src={FourImagesWithCaptions}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </HStack>
+            </ContentChoiceWrapper>
           </HStack>
         </VStack>
         <VStack gap={4} mb={4}>
@@ -130,16 +166,18 @@ const SectionsToAdd = () => {
             Video
           </Heading>
           <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
+            <ContentChoiceWrapper onClick={() => setContentChoice("video")}>
               <Image src={Video} alt="placeholder" borderRadius="sm" />
-            </Box>
-            <Box borderWidth={1} borderRadius="sm">
+            </ContentChoiceWrapper>
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("video-with-caption")}
+            >
               <Image
                 src={VideoWithCaption}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
+            </ContentChoiceWrapper>
           </HStack>
         </VStack>
         <VStack gap={4} mb={4}>
@@ -147,36 +185,44 @@ const SectionsToAdd = () => {
             Text and Image
           </Heading>
           <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("text-left-image-right")}
+            >
               <Image
                 src={TextLeftImageRight}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
-            <Box borderWidth={1} borderRadius="sm">
+            </ContentChoiceWrapper>
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("image-left-text-right")}
+            >
               <Image
                 src={ImageLeftTextRight}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
+            </ContentChoiceWrapper>
           </HStack>
           <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("text-left-large-image-right")}
+            >
               <Image
                 src={TextLeftLargeImageRight}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
-            <Box borderWidth={1} borderRadius="sm">
+            </ContentChoiceWrapper>
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("large-image-left-text-right")}
+            >
               <Image
                 src={LargeImageLeftTextRight}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
+            </ContentChoiceWrapper>
           </HStack>
         </VStack>
         <VStack gap={4}>
@@ -184,20 +230,24 @@ const SectionsToAdd = () => {
             Text and Video
           </Heading>
           <HStack w="100%" gap={4}>
-            <Box borderWidth={1} borderRadius="sm">
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("text-left-video-right")}
+            >
               <Image
                 src={TextLeftVideoRight}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
-            <Box borderWidth={1} borderRadius="sm">
+            </ContentChoiceWrapper>
+            <ContentChoiceWrapper
+              onClick={() => setContentChoice("video-left-text-right")}
+            >
               <Image
                 src={VideoLeftTextRight}
                 alt="placeholder"
                 borderRadius="sm"
               />
-            </Box>
+            </ContentChoiceWrapper>
           </HStack>
         </VStack>
       </Modal>
