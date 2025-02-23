@@ -14,6 +14,12 @@ import OneImage from "../assets/OneImage.png";
 import TwoImages from "../assets/TwoImages.png";
 import ThreeImages from "../assets/ThreeImages.png";
 import FourImages from "../assets/FourImages.png";
+import OneImageWithCaption from "../assets/OneImageWithCaption.png";
+import TwoImagesWithCaptions from "../assets/TwoImagesWithCaptions.png";
+import ThreeImagesWithCaptions from "../assets/ThreeImagesWithCaptions.png";
+import FourImagesWithCaptions from "../assets/FourImagesWithCaptions.png";
+import Video from "../assets/Video.png";
+import VideoWithCaption from "../assets/VideoWithCaption.png";
 import { Heading } from "../style/heading-recipe";
 
 const SectionsToAdd = () => {
@@ -67,8 +73,72 @@ const SectionsToAdd = () => {
             <Box borderWidth={1} borderRadius="sm">
               <Image src={ThreeImages} alt="placeholder" borderRadius="sm" />
             </Box>
-            <Box borderWidth={1} borderRadius="sm">
+            <HStack
+              borderWidth={1}
+              borderRadius="sm"
+              height="100%"
+              justifyContent={"center"}
+            >
               <Image src={FourImages} alt="placeholder" borderRadius="sm" />
+            </HStack>
+          </HStack>
+        </VStack>
+        <VStack gap={4} mb={4}>
+          <Heading type="section" textAlign="left" w="100%">
+            Images with Captions
+          </Heading>
+          <HStack w="100%" gap={4}>
+            <Box borderWidth={1} borderRadius="sm">
+              <Image
+                src={OneImageWithCaption}
+                alt="placeholder"
+                borderRadius="sm"
+              />
+            </Box>
+            <Box borderWidth={1} borderRadius="sm">
+              <Image
+                src={TwoImagesWithCaptions}
+                alt="placeholder"
+                borderRadius="sm"
+              />
+            </Box>
+          </HStack>
+          <HStack w="100%" gap={4}>
+            <Box borderWidth={1} borderRadius="sm">
+              <Image
+                src={ThreeImagesWithCaptions}
+                alt="placeholder"
+                borderRadius="sm"
+              />
+            </Box>
+            <HStack
+              borderWidth={1}
+              borderRadius="sm"
+              height="100%"
+              justifyContent={"center"}
+            >
+              <Image
+                src={FourImagesWithCaptions}
+                alt="placeholder"
+                borderRadius="sm"
+              />
+            </HStack>
+          </HStack>
+        </VStack>
+        <VStack gap={4} mb={4}>
+          <Heading type="section" textAlign="left" w="100%">
+            Video
+          </Heading>
+          <HStack w="100%" gap={4}>
+            <Box borderWidth={1} borderRadius="sm">
+              <Image src={Video} alt="placeholder" borderRadius="sm" />
+            </Box>
+            <Box borderWidth={1} borderRadius="sm">
+              <Image
+                src={VideoWithCaption}
+                alt="placeholder"
+                borderRadius="sm"
+              />
             </Box>
           </HStack>
         </VStack>

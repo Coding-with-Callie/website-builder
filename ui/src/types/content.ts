@@ -25,16 +25,17 @@ export type MediaAndTextDataType = {
   textFirst: boolean;
 };
 
-export type ImageWithCaptionType = {
+export type ImageContentType = {
   src: string;
   alt: string;
   caption: string;
 };
 
-export type ImagesWithCaptionsType = ImageWithCaptionType[];
+export type ImagesContentType = ImageContentType[];
 
 export type VideoType = {
   id: string;
+  caption?: string;
 };
 
 export type ContentType = {
@@ -48,6 +49,6 @@ export type ContentType = {
     | HeadingDataType
     | MediaAndTextDataType
     | TextDataType
-    | ImagesWithCaptionsType
+    | ImagesContentType
     | VideoType;
 };

@@ -57,23 +57,23 @@ const section2 = [
         alt: "Placeholder",
         caption: "Morbi ut justo ac sem egestas convallis at id magna",
       },
-      // {
-      //   src: "https://coding-with-callie.s3.us-east-1.amazonaws.com/placeholder.jpg",
-      //   alt: "Placeholder",
-      //   caption:
-      //     "Nullam consequat, risus id fringilla aliquam, ligula sapien varius urna",
-      // },
-      // {
-      //   src: "https://coding-with-callie.s3.us-east-1.amazonaws.com/placeholder.jpg",
-      //   alt: "Placeholder",
-      //   caption:
-      //     "Nulla tincidunt leo tellus, vestibulum euismod neque pretium nec",
-      // },
-      // {
-      //   src: "https://coding-with-callie.s3.us-east-1.amazonaws.com/placeholder.jpg",
-      //   alt: "Placeholder",
-      //   caption: "Etiam euismod aliquet elementum",
-      // },
+      {
+        src: "https://coding-with-callie.s3.us-east-1.amazonaws.com/placeholder.jpg",
+        alt: "Placeholder",
+        caption:
+          "Nullam consequat, risus id fringilla aliquam, ligula sapien varius urna",
+      },
+      {
+        src: "https://coding-with-callie.s3.us-east-1.amazonaws.com/placeholder.jpg",
+        alt: "Placeholder",
+        caption:
+          "Nulla tincidunt leo tellus, vestibulum euismod neque pretium nec",
+      },
+      {
+        src: "https://coding-with-callie.s3.us-east-1.amazonaws.com/placeholder.jpg",
+        alt: "Placeholder",
+        caption: "Etiam euismod aliquet elementum",
+      },
     ],
   },
 ];
@@ -87,6 +87,7 @@ const section3 = [
     type: "video",
     data: {
       id: "qnRqZYEjfkc",
+      caption: "Morbi ut justo ac sem egestas convallis at id magna",
     },
   },
   {

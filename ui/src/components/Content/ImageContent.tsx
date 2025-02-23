@@ -1,11 +1,11 @@
 import { Text, HStack, Image, VStack } from "@chakra-ui/react";
-import { ImagesWithCaptionsType } from "../../types/content";
+import { ImagesContentType } from "../../types/content";
 
 type Props = {
-  images: ImagesWithCaptionsType;
+  images: ImagesContentType;
 };
 
-const ImagesWithCaptions = ({ images }: Props) => {
+const ImagesContent = ({ images }: Props) => {
   return (
     <HStack gap={4} alignItems="flex-start" justifyContent="center">
       {images.map((image, index) => (
@@ -27,4 +27,4 @@ const ImagesWithCaptions = ({ images }: Props) => {
   );
 };
 
-export default ImagesWithCaptions;
+export default ImagesContent;

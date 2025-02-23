@@ -1,15 +1,19 @@
-import { HStack } from "@chakra-ui/react";
+import { HStack, VStack, Text } from "@chakra-ui/react";
 import YouTube from "react-youtube";
 
 type Props = {
   id: string;
+  caption?: string;
 };
 
-const VideoContent = ({ id }: Props) => {
+const VideoContent = ({ id, caption }: Props) => {
   return (
-    <HStack w="100%" justifyContent="center">
-      <YouTube videoId={id} />
-    </HStack>
+    <VStack>
+      <HStack w="100%" justifyContent="center">
+        <YouTube videoId={id} />
+      </HStack>
+      {caption && <Text flex={1}>{caption}</Text>}
+    </VStack>
   );
 };
 
