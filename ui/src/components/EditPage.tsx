@@ -110,7 +110,7 @@ const EditPage = ({ page, setEditPage, setDeletePage }: Props) => {
           )}
 
           {showSectionsToAdd ? (
-            <SectionsToAdd />
+            <SectionsToAdd pageId={page.id} />
           ) : (
             <Button w="100%" onClick={() => setShowSectionsToAdd(true)}>
               Add a Section!

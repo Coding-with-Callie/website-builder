@@ -29,15 +29,17 @@ const Page = ({ page, setEditPage }: Props) => {
       )}
       {page.sections &&
         page.sections.map((section, index) => {
-          const content = section.data as ContentType[];
+          if (section.published_data) {
+            const content = section.published_data as ContentType[];
 
-          return (
-            <Section key={index}>
-              {content.map((content, index) => (
-                <Content key={index} content={content} />
-              ))}
-            </Section>
-          );
+            return (
+              <Section key={index}>
+                {content.map((content, index) => (
+                  <Content key={index} content={content} />
+                ))}
+              </Section>
+            );
+          }
         })}
     </VStack>
   );

@@ -28,7 +28,7 @@ export type MediaAndTextDataType = {
 export type ImageContentType = {
   src: string;
   alt: string;
-  caption: string;
+  caption?: string;
 };
 
 export type ImagesContentType = ImageContentType[];

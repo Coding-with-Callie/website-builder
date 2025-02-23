@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,12 +23,17 @@ func RegisterAuthHandlers(router *gin.Engine, authService services.AuthService, 
 
 	// Protected routes
 	router.GET("/user-details", middleware.AuthMiddleware(logger), func(c *gin.Context) { GetUserDetails(c, authService) })
+
+	// Page routes
 	router.GET("/pages", middleware.AuthMiddleware(logger), func(c *gin.Context) { GetPages(c, pageService) })
 	router.POST("/pages", middleware.AuthMiddleware(logger), func(c *gin.Context) { CreatePage(c, pageService) })
 	router.POST("/pages/:id/publish", middleware.AuthMiddleware(logger), func(c *gin.Context) { PublishPage(c, pageService) })
 	router.PATCH("/pages/:id/move", middleware.AuthMiddleware(logger), func(c *gin.Context) { MovePage(c, pageService) })
 	router.PATCH("/pages/:id", middleware.AuthMiddleware(logger), func(c *gin.Context) { UpdatePage(c, pageService) })
 	router.DELETE("/pages/:id", middleware.AuthMiddleware(logger), func(c *gin.Context) { DeletePage(c, pageService) })
+
+	// Section routes
+	router.POST("/pages/:id/sections", middleware.AuthMiddleware(logger), func(c *gin.Context) { CreateSection(c, pageService) })
 }
 
 func Login(c *gin.Context, authService services.AuthService, pageService services.PageService) {
@@ -236,4 +243,39 @@ func DeletePage(c *gin.Context, pageService services.PageService) {
 	}
 
 	c.JSON(200, gin.H{"pages": pages})
+}
+
+type HeadingContent struct {
+	Type string `json:"type"`
+	Data struct {
+		Text string `json:"text"`
+	} `json:"data"`
+}
+
+func CreateSection(c *gin.Context, pageService services.PageService) {
+	var content HeadingContent
+	err := c.BindJSON(&content)
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid request"})
+		return
+	}
+
+	pageID := c.Param("id")
+
+	fmt.Println("Creating section for page", pageID)
+	fmt.Println("with content", content.Type, content.Data.Text)
+
+	contentJSON, err := json.Marshal(content)
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Failed to create section"})
+		return
+	}
+
+	err = pageService.CreateSection(c, pageID, contentJSON)
+	if err != nil {
+		c.JSON(500, gin.H{"message": "Failed to create section"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Section created"})
 }

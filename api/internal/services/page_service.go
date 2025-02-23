@@ -15,6 +15,7 @@ type PageService interface {
 	UpdatePage(c *gin.Context, id string, menuName string, path string, heading string) error
 	PublishPage(c *gin.Context, id string) error
 	DeletePage(c *gin.Context, id string) error
+	CreateSection(c *gin.Context, id string, content any) error
 }
 
 type Page struct {
@@ -30,6 +31,16 @@ type Page struct {
 	DraftPath     *string                 `json:"draft_path"`
 	CreatorID     int                     `json:"creator_id"`
 	Metadata      *map[string]interface{} `json:"metadata"`
+	Sections      []Section               `json:"sections"`
+}
+
+type Section struct {
+	ID            int         `json:"id"`
+	PageID        int         `json:"page_id"`
+	Type          string      `json:"type"`
+	SectionOrder  int         `json:"section_order"`
+	PublishedData interface{} `json:"published_data"`
+	DraftData     interface{} `json:"draft_data"`
 }
 
 type pageService struct {
@@ -50,61 +61,78 @@ func (s *pageService) GetPages(c *gin.Context) ([]Page, error) {
 
 	s.logger.Info().Str("role", role.(string)).Msg("Getting pages")
 
-	rows, err := s.db.Query("SELECT id, create_date, publish_date, modify_date, menu_name, draft_menu_name, heading, draft_heading, path, draft_path, creator_id, metadata FROM pages ORDER BY page_order ASC")
+	rows, err := s.db.Query(`
+		SELECT
+			p.id, p.create_date, p.publish_date, p.modify_date, p.menu_name, p.draft_menu_name, p.heading, p.draft_heading, p.path, p.draft_path, p.creator_id, p.metadata,
+			s.id, s.page_id, s.type, s.section_order, s.published_data, s.draft_data
+		FROM pages p
+		LEFT JOIN sections s ON p.id = s.page_id
+		ORDER BY p.page_order ASC, s.section_order ASC
+	`)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to get pages")
 		return nil, err
 	}
 	defer rows.Close()
 
-	pages := []Page{}
+	pagesMap := make(map[int]*Page)
 	for rows.Next() {
-		var id int
-		var createDate time.Time
-		var publishDate, modifyDate *time.Time
-		var path string
-		var draftPath, menuName, heading, draftMenuName, draftHeading *string
-		var creatorID int
-		var metadata *map[string]interface{}
-		err = rows.Scan(&id, &createDate, &publishDate, &modifyDate, &menuName, &draftMenuName, &heading, &draftHeading, &path, &draftPath, &creatorID, &metadata)
+		var page Page
+		var section Section
+
+		var sectionID sql.NullInt32
+		var sectionPageID sql.NullInt32
+		var sectionType sql.NullString
+		var sectionOrder sql.NullInt32
+		var sectionPublishedData sql.NullString
+		var sectionDraftData sql.NullString
+
+		err = rows.Scan(
+			&page.ID, &page.CreateDate, &page.PublishDate, &page.ModifyDate, &page.MenuName, &page.DraftMenuName, &page.Heading, &page.DraftHeading, &page.Path, &page.DraftPath, &page.CreatorID, &page.Metadata,
+			&sectionID, &sectionPageID, &sectionType, &sectionOrder, &sectionPublishedData, &sectionDraftData,
+		)
 		if err != nil {
 			s.logger.Error().Err(err).Msg("Failed to scan row")
 			return nil, err
 		}
 
-		show := true
+		if page.PublishDate == nil && role == "guest" {
+			continue
+		}
 
-		if role == "guest" {
-			if publishDate == nil {
-				show = false
+		if page.Path == "/login" && role != "guest" {
+			continue
+		}
+
+		if sectionID.Valid {
+			section.ID = int(sectionID.Int32)
+			section.PageID = int(sectionPageID.Int32)
+			section.Type = sectionType.String
+			section.SectionOrder = int(sectionOrder.Int32)
+			section.PublishedData = sectionPublishedData.String
+			section.DraftData = sectionDraftData.String
+		}
+
+		s.logger.Info().Int("pageID", page.ID).Int("sectionID", section.ID).Msg("Scanned row")
+
+		if existingPage, exists := pagesMap[page.ID]; exists {
+			if sectionID.Valid {
+				existingPage.Sections = append(existingPage.Sections, section)
 			}
-		}
-
-		if role != "guest" {
-			if path == "/login" {
-				show = false
+		} else {
+			if sectionID.Valid {
+				page.Sections = []Section{section}
 			}
-		}
-
-		page := Page{
-			ID:            id,
-			CreateDate:    createDate,
-			PublishDate:   publishDate,
-			ModifyDate:    modifyDate,
-			MenuName:      menuName,
-			DraftMenuName: draftMenuName,
-			Heading:       heading,
-			DraftHeading:  draftHeading,
-			Path:          path,
-			DraftPath:     draftPath,
-			CreatorID:     creatorID,
-			Metadata:      metadata,
-		}
-
-		if show {
-			pages = append(pages, page)
+			pagesMap[page.ID] = &page
 		}
 	}
+
+	pages := make([]Page, 0, len(pagesMap))
+	for _, page := range pagesMap {
+		pages = append(pages, *page)
+	}
+
+	s.logger.Info().Int("numPages", len(pages)).Msg("Got pages")
 
 	return pages, nil
 }
@@ -273,6 +301,21 @@ func (s *pageService) DeletePage(c *gin.Context, id string) error {
 	_, err := s.db.Exec("DELETE FROM pages WHERE id = $1", id)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("Failed to delete page")
+		return err
+	}
+
+	return nil
+}
+
+func (s *pageService) CreateSection(c *gin.Context, id string, content any) error {
+	// Get the username from the context
+	username, _ := c.Get("username")
+
+	s.logger.Info().Str("id", id).Str("username", username.(string)).Msg("Creating section")
+
+	_, err := s.db.Exec("INSERT INTO sections (page_id, type, section_order, draft_data) VALUES ($1, 'content', 1, $2)", id, content)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("Failed to create section")
 		return err
 	}
 

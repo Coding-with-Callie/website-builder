@@ -22,6 +22,8 @@ import Video from "../assets/Video.png";
 import VideoWithCaption from "../assets/VideoWithCaption.png";
 import { Heading } from "../style/heading-recipe";
 import { text } from "../style/theme";
+import { axiosCustom } from "../utils/axios";
+import { headingContent } from "../utils/content-placeholder-data";
 
 const ContentChoiceWrapper = ({
   children,
@@ -55,11 +57,30 @@ const ContentChoiceWrapper = ({
   </HStack>
 );
 
-const SectionsToAdd = () => {
+type Props = {
+  pageId: number;
+};
+
+const SectionsToAdd = ({ pageId }: Props) => {
   const [open, setOpen] = useState(false);
   const [contentChoice, setContentChoice] = useState<string | null>(null);
 
-  console.log("contentChoice", contentChoice);
+  const addContentToSection = () => {
+    let dataToSend = {};
+
+    if (contentChoice === "heading") {
+      dataToSend = headingContent;
+    }
+
+    axiosCustom
+      .post(`/pages/${pageId}/sections`, dataToSend)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <>
@@ -77,7 +98,12 @@ const SectionsToAdd = () => {
           <Heading type="section" textAlign="left" w="100%">
             Heading
           </Heading>
-          <ContentChoiceWrapper onClick={() => setContentChoice("heading")}>
+          <ContentChoiceWrapper
+            onClick={() => {
+              setContentChoice("heading");
+              addContentToSection();
+            }}
+          >
             <Image src={HeadingPhoto} alt="placeholder" borderRadius="sm" />
           </ContentChoiceWrapper>
         </VStack>

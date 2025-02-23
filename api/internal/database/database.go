@@ -72,6 +72,25 @@ func CreateTables(logger zerolog.Logger) {
 	if err != nil {
 		logger.Fatal().Err(err).Msg("Failed to create pages table")
 	}
+
+	// Create an ENUM type for section types if it doesn't exist
+	_, err = DB.Exec(`
+		DO $$
+		BEGIN
+			IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'section_type') THEN
+				CREATE TYPE section_type AS ENUM ('content');
+			END IF;
+		END $$;
+	`)
+	if err != nil {
+		logger.Fatal().Err(err).Msg("Failed to create section type ENUM")
+	}
+
+	// Create a sections table if it doesn't exist
+	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS sections (id SERIAL PRIMARY KEY, page_id INT, type section_type, section_order INT, published_data JSON, draft_data JSON, FOREIGN KEY (page_id) REFERENCES pages(id))")
+	if err != nil {
+		logger.Fatal().Err(err).Msg("Failed to create sections table")
+	}
 }
 
 func Seed(logger zerolog.Logger) {
