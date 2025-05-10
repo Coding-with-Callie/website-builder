@@ -1,0 +1,51 @@
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogRoot,
+} from "@chakra-ui/react";
+
+type Props = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  children: React.ReactNode;
+  alert?: boolean;
+  size?: "lg" | "cover";
+};
+
+const Modal = ({
+  open,
+  setOpen,
+  children,
+  alert = false,
+  size = "lg",
+}: Props) => {
+  return (
+    <DialogRoot
+      open={open}
+      onOpenChange={(e) => setOpen(e.open)}
+      size={size}
+      role={alert ? "alertdialog" : "dialog"}
+      scrollBehavior="outside"
+    >
+      <DialogBackdrop />
+      <DialogContent
+        p={4}
+        bg="white"
+        boxShadow="lg"
+        borderRadius="lg"
+        position="fixed"
+        top="5%"
+        left={size === "lg" ? "" : "5%"}
+        w={size === "lg" ? "" : "90%"}
+        h={size === "lg" ? "" : "90%"}
+        overflow="auto"
+      >
+        {children}
+        <DialogCloseTrigger />
+      </DialogContent>
+    </DialogRoot>
+  );
+};
+
+export default Modal;
